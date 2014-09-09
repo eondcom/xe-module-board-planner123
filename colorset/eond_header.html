@@ -1,0 +1,146 @@
+<!---------------------------------------------------------------------------------------------------------------------
+PlannerXE123 Custom Colorset (by eond.com)
+최근 수정일 : 2014년 1월 23일
+버전 : v.0.3
+<!--------------------------------------------------------------------------------------------------------------------->
+
+<!-- 부트스트랩을 적용하지 않는 레이아웃을 사용하시는 분은 아래 코드를 지우고 사용하세요. 
+Complete CSS
+//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css
+Complete JavaScript
+//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js
+Awesome CSS
+//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css
+-->
+<!--%import("http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")-->
+
+
+<style type="text/css">
+/************
+ 기존값 감추기
+************/
+.boardInformation {padding:0;}
+/* 전체글 수 출력 */
+.infoSum {display:none;}
+/* 기존 게시판 설정 */
+.infoView {display:none;}
+/* 기존 기념일 */
+.planner_navigation form {display:none;}
+.planner_navigation span {display:none;}
+/*
+.planer123 .planner_control
+*/
+/* 기존 달력 년월 제목*/
+.planner_this {display:none;}
+
+
+/************
+ 새로운 설정
+************/
+
+/* 요일 */
+.wd_title {font-family:"맑은 고딕", verdana;font-weight:normal;font-size:0.9em;text-align:left;margin-left:10px;}
+.holiday .wd_title  {color:red;}
+.saturday {}
+table.planner_calendar th {border:0;background:white;}
+/* 달력 타이틀 */
+.planner_this {clear:both;width:100%;text-align:center;border:0px solid red;}
+.planner_this span {color:#646464;font-family:Courier, Arial;font-weight:normal;font-size:1.3em;letter-spacing:-1px}
+/* 날짜  */
+.planner_calendar_inner .date_label {color:#6D6D6D;font-size:0.8em;font-weight:normal;font-family:verdana;padding:5px 5px 5px 0;}
+.planner_calendar_inner .holiday {color:#FF0000;font-size:0.8em;font-weight:normal;font-family:verdana;padding:5px 5px 5px 0;}
+
+/* 오늘 */
+.planner123 table tbody .today_bg {background:#E3EDFF;border:2px solid #517CDA;}
+.planner123 table td .today_date_bg {background-color:#E3EDFF;}
+
+/* 마우스 올렸을 때 */
+.planner123 table tbody .today_bg:hover {border:2px solid #F9EB8A;}
+.planner_calendar tr td.hover {background:#FFFFD9;}
+.planner_calendar tr td:hover .today_date_bg {background:#FFFFCC;}
+/*
+.today_date_bg => tbody td / table tbody / table td / table tbody td 가능
+.today_bg => table tbody 만 가능
+*/
+/* 절기 */
+.planner_calendar_inner .seasons24 {font-family:dotum;color:#999;font-weight:normal;font-size:0.9em;float:right;padding:3px 3px 0 0;border:0px solid red;}
+/* 국경일 */
+.planner_calendar_inner div.holiday {font-family:dotum;font-weight:normal;font-size:0.9em;float:right;padding:0px 3px 0 0;color:#E79393;}
+/* 기념일 */
+.planner_calendar_inner .memorial {font-family:dotum;color:#999;font-weight:normal;font-size:0.9em;float:right;padding:0px 3px 0 0;border:0px solid red;}
+/* 음력 */
+.planner_calendar_inner .lunar {font-family:dotum;font-weight:normal;font-size:0.9em;float:right;padding:3px 3px 0 0;border:0px solid red;color:#bbb;}
+/* 일정 */
+.schedule_view {color:white;font-family:dotum;padding:2px 4px;border-radius:0px; -moz-border-radius:0px; -webkit-border-radius:0px;margin-left:1px;margin-right:1px;}
+.planner_calendar_inner:hover a {text-decoration:none;}
+.schedule_view img {vertical-align:top;margin:1px 1px 0 2px;}
+</style>
+<!--#include("../_get_schedule.html")-->
+<!--@if($lang_type=='ko')-->
+{@
+$lang->mon="월";
+$lang->tue="화";
+$lang->wed="수";
+$lang->thu="목";
+$lang->fri="금";
+$lang->sat="토";
+$lang->sun="일";
+}
+<!--@else-->
+{@
+$lang->mon="Mon";
+$lang->tue="Tue";
+$lang->wed="Wed";
+$lang->thu="Thu";
+$lang->fri="Fri";
+$lang->sat="Sat";
+$lang->sun="Sun";}
+<!--@end-->
+
+<!--//S: 라이프팟 게시판 설정-->
+<div class="container-fluid" style="padding:0 5px;border:0px solid red;margin:0;">
+
+<div class="btn-toolbar pull-left">
+  <div class="btn-group">
+	<a class="btn" href="{$linkpath}&amp;pYear={$pYear}&amp;pMonth={$pMonth-1}"><i class="fa fa-chevron-left"></i></a>
+	<a class="btn" href="{$linkpath}&amp;pOption_2={$pOption_2}&amp;pYear={$todayYY}&amp;pMonth={$todayMM}&amp;pDay={$todayDD}">오늘</a>
+	<a class="btn" href="{$linkpath}&amp;pYear={$pYear}&amp;pMonth={$pMonth+1}"><i class="fa fa-chevron-right"></i></a>
+  </div>
+</div>
+
+<!--@if($module_info->display_country_select != 'N')-->
+<div class="btn-toolbar pull-left" style="margin-left:10px;display: none;">
+<div class="btn-group">
+  <a class="btn">{$holiday_country_name}</a>
+  <a class="btn dropdown-toggle" data-toggle="dropdown"><span><i class="fa fa-globe"></i></span></a>
+  <ul class="dropdown-menu">
+	<!--@foreach($holiday_cnt_arr as $cnt_key => $cnt_val)-->
+	<li value="{$cnt_key}"><a href="{getUrl('pGanjioption',1,'pHoliday_cnt',"$cnt_key")}">{$cnt_val}</a></li>
+	<!--@end-->
+  </ul>
+</div>
+</div>
+<!--@endif-->
+
+<div class="btn-toolbar pull-right">
+  <div class="btn-group">
+
+	<a class="btn" href="{getUrl('document_srl','','device','printer','extra_vars1','')}"><i class="fa fa-print"></i></a>
+	<a class="btn" href="{$tmp_size}" style="display: none;"><i class="fa fa-search"></i></a>
+	<!--@if($module_info->module == 'bodex')--><a class="btn" href="{getUrl('act','dispBodexAdminBoardInfo')}"><!--@else--><a class="btn" href="{getUrl('act','dispBoardAdminBoardInfo')}"><!--@end--><i class="fa fa-cog"></i></a>
+  </div>
+</div>
+
+<!--#@if($grant->is_admin)-->
+<div class="btn-toolbar pull-right visible-desktop" style="margin-right:10px;">
+  <div class="btn-group">
+	<a class="btn" href="{getUrl('listStyle','planner_simple','act','','document_srl','','device','','extra_vars1','','pOption','M')}"><i class="fa fa-tasks"></i></a>
+	<a class="btn" href="{getUrl('listStyle','planner_list','act','','document_srl','','device','','extra_vars1','','pOption','M')}"><i class="fa fa-list"></i></a>
+	<a class="btn" href="{getUrl('act','','document_srl','','device','','extra_vars1','','pOption','W1')}">주</a>
+	<a class="btn" href="{getUrl('act','','document_srl','','device','','extra_vars1','','pOption','W2')}">2주</a>
+	<a class="btn" href="{getUrl('listStyle','planner','act','','document_srl','','device','','extra_vars1','','pOption','M')}">월</a>
+	<a class="btn" href="{getUrl('listStyle','list','act','','document_srl','','device','','extra_vars1','')}">목록</i></a>
+  </div>
+</div>
+<!--#@end-->
+</div><!--//E: 라이프팟 게시판 설정-->

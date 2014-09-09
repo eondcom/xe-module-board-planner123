@@ -1,0 +1,8 @@
+@charset "utf-8";
+/* PlannerXE123 - (Calendar) */
+
+/* for print */
+body {color : #000000; background : #FFFFFF; font-family : 굴림,"Times New Roman"; font-size : 12pt;}
+#header, #columnLeft, #footer {display:none;}
+.columnLeft, .bread-crumb, .boardInformation, .planner_navigation {display:none;}
+.columnRight {background : #FFFFFF; width:100%;}

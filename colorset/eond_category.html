@@ -1,0 +1,15 @@
+<!--@if($module_info->use_category == "Y" && count($category_list) && $module_info->display_category_button != "N")--><!--// 카테고리 탭 출력 -->
+<!--@foreach($category_list as $val)-->
+{@ $tmp_cartegory[$val->title] = array('title' => $val->title, 'category_srl' => $val->category_srl, 'color' => $val->color, 'grant' => $val->grant, 'selected' => $val->selected, 'document_count' => $val->document_count, 'depth' => $val->depth)}
+<!--@end-->
+{@ ksort($tmp_cartegory)}
+<!--@if($lang_type == "ko")-->{@ $label_cat_all="모든 일정"}<!--@else-->{@ $label_cat_all="ALL"}<!--@end-->
+<ul class="nav nav-tabs" style="margin:0;">
+  <li class="active"|cond="!$category">
+    <a onclick="doChgCategory(); return false;" style="cursor:pointer;">{$label_cat_all}</a>
+  </li>
+  <!--@foreach($tmp_cartegory as $val)-->
+  <li class="active"|cond="$category==$val['category_srl']"><a onclick="doChgCategory({$val['category_srl']}); return false;" style="cursor:pointer;">{$val['title']}</a></li>
+  <!--@end-->
+  <li><a href="#">...</a></li>
+</ul><!--@end-->

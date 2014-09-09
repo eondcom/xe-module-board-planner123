@@ -1,0 +1,62 @@
+@charset "utf-8";
+/* PlannerXE123 */
+
+/* Planner123 */
+.planner123 { color:black; font-family:"돋움",Dotum,"굴림",Gulim, Tahoma, Sans-serif; line-height:normal; font-size:12px;}
+.planner123 a{ text-decoration:none; color:black;}
+.planner123 a:hover,
+.planner123 a:active,
+.planner123 a:focus{ text-decoration:underline;}
+.planner123 .strong { font-weight:bold; }
+
+.planner123 .planner_navigation {display:inline;}
+.planner123 .planner_navigation img{border:none; margin:0; padding:0;}
+.planner123 .planner_navigation select{width:auto;}
+
+.schedule_view {cursor:pointer; padding-left:2px; margin:0 1px 0 1px; border-radius:4px; -moz-border-radius:4px; -webkit-border-radius:4px;}
+.schedule_view a{ text-decoration:none; color:black;}
+.schedule_view a:hover,
+.schedule_view a:active,
+.schedule_view a:focus{ text-decoration:underline;}
+.complete { color:#000000; text-decoration:line-through; }
+
+.planner_control { width:100%; background:transparent; *zoom:1; }
+.planner_control:after { planner_this:""; clear:both; display:block; }
+.planner_this {float:left; color:#008000; font: bold 20px verdana;  }
+.planner_navigation {float:right;}
+
+/* Planner123 - (calendar) */
+.planner_calendar { clear:both; width:100%; border-collapse:collapse; table-layout:fixed; }
+.planner_calendar th,td { padding:0; border-spacing:0; }
+.planner_calendar td { border:1px solid #ccc; height:90px; padding:0; vertical-align:top; }
+.planner_calendar_inner { margin:0; padding:0; width:100%; min-height:80px; display:block; }
+.planner_calendar_inner ul { vertical-align:top; text-align:left; border:none; }
+.planner_calendar li { height:auto; padding:0px; list-style-type:none; }
+.planner_calendar .holiday { color:#ff0000;}
+.planner_calendar .saturday { color:#0000ff; }
+.planner_calendar .weekday { color:#303030; }
+.planner_calendar .lunar { color:#b03060; }
+.planner_calendar .seasons24 { color:#0000ff; }
+.planner_calendar .memorial { color:#008b8b;}
+.planner_calendar .small { font-size:0.9em; }
+.planner_calendar .font_big { font-size:14px; }
+
+/* Planner123 - (list) */
+.planner_list { clear:both; width:100%; border-collapse:collapse; empty-cells:show; table-layout:fixed; }
+.planner_list th,td { padding:0; border-spacing:0; }
+.planner_list td { border:1px solid #ccc; min-height:30px; vertical-align:top;  line-height:1.2em; }
+.planner_list td img { margin:0; padding:0; _vertical-align:top; }
+.planner_list .plan { margin:0; padding:5px; }
+.planner_list .plan span { margin:0; padding:0; }
+.planner_list td ul { margin:0; padding:0; vertical-align:middle; text-align:center; }
+.planner_list td li { width:auto; height:auto; padding:0; list-style-type:none; }
+.planner_list td .bline { border-bottom:0px solid #ccc; }
+.planner_list .holiday { color:#ff0000; }
+.planner_list .saturday { color:#0000ff; }
+.planner_list .weekday { color:#303030; }
+.planner_list .lunar { color:#b03060; }
+.planner_list .strong { font-weight:bold; }
+.planner_list .seasons24 { color:#0000ff; }
+.planner_list .memorial { color:#008b8b; }
+.planner_list .small { font-size:0.9em; }
+.planner_list .font_big { font-size:14px; }
