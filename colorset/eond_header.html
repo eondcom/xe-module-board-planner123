@@ -1,10 +1,11 @@
-<!---------------------------------------------------------------------------------------------------------------------
+<!-- -------------------------------------------------------------------------------------------------------------------
 PlannerXE123 Custom Colorset (by eond.com)
-최근 수정일 : 2014년 1월 23일
-버전 : v.0.3
-<!--------------------------------------------------------------------------------------------------------------------->
+최근 수정일 :	2014년 1월 23일
+				2014년 9월 9일
+버전 : v.0.3.1
+-------------------------------------------------------------------------------------------------------------------- -->
 
-<!-- 부트스트랩을 적용하지 않는 레이아웃을 사용하시는 분은 아래 코드를 지우고 사용하세요. 
+<!-- 
 Complete CSS
 //netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css
 Complete JavaScript
@@ -12,8 +13,12 @@ Complete JavaScript
 Awesome CSS
 //netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css
 -->
-<!--%import("http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")-->
 
+<!--%import("http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")-->
+<!--%import("./bootstrap.min.css")-->
+
+<!-- 부트스트랩을 적용된 레이아웃을 사용하는 경우 다음 코드를 삭제하십시오. -->
+<!--%import("http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js")-->
 
 <style type="text/css">
 /************
@@ -27,12 +32,13 @@ Awesome CSS
 /* 기존 기념일 */
 .planner_navigation form {display:none;}
 .planner_navigation span {display:none;}
+/* 기존 달력 년월 제목*/
+.planner_this {display:none;}
+/* 기존 카테고리 */
+.category_navigation{display:none}
 /*
 .planer123 .planner_control
 */
-/* 기존 달력 년월 제목*/
-.planner_this {display:none;}
-
 
 /************
  새로운 설정
@@ -55,7 +61,7 @@ table.planner_calendar th {border:0;background:white;}
 .planner123 table td .today_date_bg {background-color:#E3EDFF;}
 
 /* 마우스 올렸을 때 */
-.planner123 table tbody .today_bg:hover {border:2px solid #F9EB8A;}
+.planner123 table tbody .today_bg:hover {border:2px solid #F9EB8A;background-color:#ffffcc;}
 .planner_calendar tr td.hover {background:#FFFFD9;}
 .planner_calendar tr td:hover .today_date_bg {background:#FFFFCC;}
 /*

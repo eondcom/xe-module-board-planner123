@@ -123,25 +123,26 @@
 {@ $tmp_cartegory[$val->title] = array('title' => $val->title, 'category_srl' => $val->category_srl, 'color' => $val->color, 'grant' => $val->grant, 'selected' => $val->selected, 'document_count' => $val->document_count, 'depth' => $val->depth)}
 <!--@end-->
 {@ ksort($tmp_cartegory)}
-<div class="category_navigation"">
+<div class="category_navigation">
 {@ $label_cat_all=$lang->pln_cat_all}
 <button title="{$label_cat_all}" type="button" id="btn_all" onclick="doChgCategory(); return false;" class="button2" style='font-size:12px; padding:1px; cursor:pointer; color:#000000;'><!--@if(!$category)--><span class="strong"><!--@else--><span><!--@end-->{$label_cat_all}</span></button>
 <!--@foreach($tmp_cartegory as $val)-->
 <button title="{$val['title']}" type="button" id={$val['title']} onclick="doChgCategory({$val['category_srl']}); return false;" class="button2" style="font-size:12px; padding:1px; cursor:pointer; <!--@if($val['color'] != transparent)-->color:{$val['color']};<!--@end-->" > <!--@if($category == $val['category_srl'])--><span class="strong" ><!--@else--><span><!--@end-->{$val['title']}</span></button>
 <!--@end-->
 </div>
+<include target="colorset/eond_category.html" />
 <!--@end-->
 {@
 $tbl_html .=  "<table class='planner_calendar' summary='PlannerXE123'>";//  달력
 $tbl_html .=  "<thead>";
 $tbl_html .=  "<tr>";
-$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border holiday'><div class='wd_title'>Sun</div></div></th>";
-$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>Mon</div></div></th>";
-$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>Tue</div></div></th>";
-$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>Wed</div></div></th>";
-$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>Thu</div></div></th>";
-$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>Fri</div></div></th>";
-$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border saturday'><div class='wd_title'>Sat</div></div></th>";
+$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border holiday'><div class='wd_title'>".$lang->sun."</div></div></th>";
+$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>".$lang->mon."</div></div></th>";
+$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>".$lang->tue."</div></div></th>";
+$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>".$lang->wed."</div></div></th>";
+$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>".$lang->thu."</div></div></th>";
+$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>".$lang->fri."</div></div></th>";
+$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border saturday'><div class='wd_title'>".$lang->sat."</div></div></th>";
 $tbl_html .=  "</tr>";
 $tbl_html .=  "</thead>";
 $tbl_html .=  "<tbody>";
