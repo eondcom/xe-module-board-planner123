@@ -70,32 +70,34 @@
         <condition operation="in"  column="category_srl" var="var_category_srl" pipe="and" />
 
 	    <group pipe="and">
-        <condition operation="more"  column="extra_vars_t1.value" var="var_period_start" notnull="notnull" />
-        <condition operation="less"  column="extra_vars_t1.value" var="var_period_end" notnull="notnull" pipe="and" />
+        <condition operation="less"  column="extra_vars_t1.value" var="var_period_end" notnull="notnull" />
+        <condition operation="more"  column="extra_vars_t1.value" var="var_period_start" notnull="notnull" pipe="and" />
 
         <condition operation="less"  column="extra_vars_t1.value" var="var_period_end" notnull="notnull" pipe="or" />
         <condition operation="more"  column="extra_vars_t2.value" var="var_period_start" notnull="notnull" pipe="and" />
-        <condition operation="more"  column="extra_vars_t2.value" var="var_fld_null" pipe="and" />
-        <condition operation="notequal" column="substr(extra_vars_t6.value,1,1)" var="var_2" default='2' pipe="and" />
+        <condition operation="null" column="substr(extra_vars_t6.value,1,1)" pipe="and" />
 
         <condition operation="less"  column="extra_vars_t1.value" var="var_period_end" notnull="notnull" pipe="or" />
         <condition operation="more"  column="extra_vars_t2.value" var="var_period_start" notnull="notnull" pipe="and" />
-        <condition operation="more"  column="extra_vars_t2.value" var="var_fld_null" pipe="and" />
-        <condition operation="equal" column="substr(extra_vars_t6.value,1,1)" var="var_2" default='2' pipe="and" />
-        <condition operation="notequal" column="extra_vars_t5.value" default='12' pipe="and" />
+        <condition operation="null" column="extra_vars_t5.value" pipe="and" />
+
+        <condition operation="less"  column="extra_vars_t1.value" var="var_period_end" notnull="notnull" pipe="or" />
+        <condition operation="more"  column="extra_vars_t2.value" var="var_period_start" notnull="notnull" pipe="and" />
+		<condition operation="notequal"  column="substr(extra_vars_t6.value,1,1)" default='2' notnull="notnull" pipe="and" />
+        <condition operation="notequal"  column="extra_vars_t5.value" default='12' notnull="notnull" pipe="and" />
 
         <condition operation="less"  column="extra_vars_t1.value" var="var_period_end" notnull="notnull" pipe="or" />
         <condition operation="more"  column="extra_vars_t2.value" var="var_period_start" notnull="notnull" pipe="and" />
 		<condition operation="more"  column="substr(extra_vars_t1.value,5,4)" var="var_start_mmdd" notnull="notnull"  pipe="and" />
         <condition operation="less"  column="substr(extra_vars_t1.value,5,4)" var="var_end_mmdd" notnull="notnull" pipe="and" />
-		<condition operation="equal"  column="substr(extra_vars_t6.value,1,1)" var="var_2" default='2' notnull="notnull" pipe="and" />
+		<condition operation="equal"  column="substr(extra_vars_t6.value,1,1)" default='2' notnull="notnull" pipe="and" />
         <condition operation="equal"  column="extra_vars_t5.value" default='12' notnull="notnull" pipe="and" />
 
         <condition operation="less"  column="extra_vars_t1.value" var="var_period_end" notnull="notnull" pipe="or" />
         <condition operation="more"  column="extra_vars_t2.value" var="var_period_start" notnull="notnull" pipe="and" />
         <condition operation="more"  column="substr(extra_vars_t1.value,5,4)" var="var_start_mmdd2" notnull="notnull"  pipe="and" />
         <condition operation="less"  column="substr(extra_vars_t1.value,5,4)" var="var_end_mmdd2" notnull="notnull" pipe="and" />
-        <condition operation="equal"  column="substr(extra_vars_t6.value,1,1)" var="var_2" default='2' notnull="notnull" pipe="and" />
+        <condition operation="equal"  column="substr(extra_vars_t6.value,1,1)" default='2' notnull="notnull" pipe="and" />
         <condition operation="equal"  column="extra_vars_t5.value" default='12' notnull="notnull" pipe="and" />
        </group>
 

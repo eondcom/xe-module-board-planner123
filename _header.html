@@ -27,6 +27,8 @@
 <!--@endif-->
 <!--// 모바일에서 쓰기가 정상 작동이 안되어 추가함 -->
 
+{@ Context::loadLang($tpl_path."/lang/"); // loadding language pack.}
+
 <!--@if(!$module_info->duration_new = (int)$module_info->duration_new)-->{@ $module_info->duration_new = 12 }<!--@end-->
 <!--@if(!$module_info->content_cut_size = (int)$module_info->content_cut_size)-->{@ $module_info->content_cut_size= 240 }<!--@end-->
 
@@ -73,9 +75,6 @@
 
     <!--@if($module_info->display_setup_button != 'N')-->
     <div class="boardInformation">
-
-<!--S:라이프팟-->
-<include target="colorset/eond_header.html" /><!--E:라이프팟-->
 
         <!--@if($total_count && $module_info->default_style != 'blog')-->
         <div class="infoSum">{$lang->document_count} <strong>{number_format($total_count)}</strong></div>

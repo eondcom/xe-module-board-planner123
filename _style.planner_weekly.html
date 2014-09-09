@@ -34,7 +34,8 @@
 ##  - Keysung Chung, 2009, 07, 28
 ##  - http://chungfamily.woweb.net/
 ## [changes]
-##  - PlannerXE123 ver. 4.1.0 : Keysung Chung, 2012, 04, 27
+##  - PlannerXE123 ver. 4.3.0 : Keysung Chung, 2014, 01, 01
+##  - PlannerXE123 ver. 4.1.0 : Keysung Chung, 2013, 03, 12
 ##  - PlannerXE123 ver. 4.0.0 : Keysung Chung, 2011, 08, 01
 ##  - PlannerXE123 ver. 3.3.0 : Keysung Chung, 2010, 12, 12
 ##  - PlannerXE123 ver. 3.2.0 : Keysung Chung, 2010, 10, 31
@@ -87,20 +88,11 @@
 <!--@if($is_logged && $logged_info->member_srl)-->
 {@
 $plan_weekday = date("w", mktime(0,0,0,$pMonth, $pDay, $pYear));
-$tmp_desc_sharpen = "Health(건강):&#x0A;&#x0A;&#x0A;Emotion(감정):&#x0A;&#x0A;&#x0A;Spirit(정신):&#x0A;&#x0A;&#x0A;Knowledge(지식):&#x0A;";
-$tmp_desc_role = "Personal(개인):&#x0A;&#x0A;&#x0A;Family(가정):&#x0A;&#x0A;&#x0A;Job(직장):&#x0A;&#x0A;&#x0A;Religion(종교):&#x0A;&#x0A;&#x0A;Etc(기타):&#x0A;";
+$tmp_desc_sharpen = $lang->pln_sharpen_1.":&#x0A;&#x0A;&#x0A;".$lang->pln_sharpen_2.":&#x0A;&#x0A;&#x0A;".$lang->pln_sharpen_3.":&#x0A;&#x0A;&#x0A;".$lang->pln_sharpen_4.":&#x0A;";
+$tmp_desc_role = $lang->pln_role_1.":&#x0A;&#x0A;&#x0A;".$lang->pln_role_2.":&#x0A;&#x0A;&#x0A;".$lang->pln_role_3.":&#x0A;&#x0A;&#x0A;".$lang->pln_role_4.":&#x0A;&#x0A;&#x0A;".$lang->pln_role_5.":&#x0A;";
+$tmp_desc_task = $lang->pln_today_task_1."&#x0A;&#x0A;&#x0A;&#x0A;".$lang->pln_today_task_2."&#x0A;&#x0A;&#x0A;&#x0A;".$lang->pln_today_task_3."&#x0A;&#x0A;";
+$tmp_desc_remark = $lang->pln_remark_1.":&#x0A;&#x0A;";
 }
-<!--@if($lang_type == "ko")-->
-{@
-$tmp_desc_task = "--꼭 해야할일--&#x0A;&#x0A;&#x0A;&#x0A;--하면 좋은일--&#x0A;&#x0A;&#x0A;&#x0A;--관심 사항---&#x0A;&#x0A;";
-$tmp_desc_remark = "금주 관심사항:&#x0A;&#x0A;";
-}
-<!--@else-->
-{@
-$tmp_desc_task = "--Must do--&#x0A;&#x0A;&#x0A;&#x0A;--Would be good to do--&#x0A;&#x0A;&#x0A;&#x0A;--Emphasis on---&#x0A;&#x0A;";
-$tmp_desc_remark = "This week emphasis:&#x0A;&#x0A;";
-}
-<!--@endif-->
 <div class="weekPlan">
 <div class="weekPlanNavigation">
 <button type="button" class="prevWeek" title="prevWeek" onclick="location.href='{$linkpath}&pOption={$pOption}&pYear={$pYear}&pMonth={$pMonth}&pDay={$pDay-7}'">&lt;&lt;</button>
@@ -113,18 +105,18 @@ $tmp_desc_remark = "This week emphasis:&#x0A;&#x0A;";
 <input type="hidden" id="myplan_title" value='{$myplan_title}'></input>
 </div>
 <div style="clear:both; height:30px; "></div>
-<div style="float:left; width:46%; padding-left:8px;"><span style="">-Today task(오늘업무)-<br/></span>
+<div style="float:left; width:46%; padding-left:8px;"><span style="">{$lang->pln_today_task}<br/></span>
 <textarea id="task" style="width:97%; font-size:12px;" rows="29" name="sharpen"><!--@if($myplan_arr_week[$plan_weekday]==null)-->{$tmp_desc_task}<!--@else-->{$myplan_arr_week[$plan_weekday]}<!--@endif--></textarea>
 </div>
 <div style="float:left; width:46%; padding-left:8px;">
-<div>-Sharpen(다듬기)-<br/>
+<div>{$lang->pln_sharpen}<br/>
 <textarea id="sharpen" style="width:97%; font-size:12px;" rows="12" name="task"><!--@if($myplan_arr_week[7]==null)-->{$tmp_desc_sharpen}<!--@else-->{$myplan_arr_week[7]}<!--@endif--></textarea>
 </div>
-<div style="margin-top:6px;">-Role/Goal(역활/목표)-<br/>
+<div style="margin-top:6px;">{$lang->pln_role}<br/>
 <textarea id="role" style="width:97%; font-size:12px;" rows="15" name="goal"><!--@if($myplan_arr_week[8]==null)-->{$tmp_desc_role}<!--@else-->{$myplan_arr_week[8]}<!--@endif--></textarea>
 </div>
 </div>
-<div style="clear:both; padding-left:8px; " ><br/>-Remark/Attention(관심사항)-<br/>
+<div style="clear:both; padding-left:8px; " ><br/>{$lang->pln_remark}<br/>
 <textarea id="remark" style="width:95%; font-size:12px; " rows="7" name="remark"><!--@if($myplan_arr_week[9]==null)-->{$tmp_desc_remark}<!--@else-->{$myplan_arr_week[9]}<!--@endif--></textarea>
 </div><br/>
 <div style="padding-left:130px;" >
@@ -137,7 +129,7 @@ $tmp_desc_remark = "This week emphasis:&#x0A;&#x0A;";
 </div>
 <!--@else-->
 <div class="myPlan">
-<span style="color:brown; font: bold 12px verdana;"><br/><br/><br/>&nbsp;로그인을 하시면 주간계획을 볼 수 있습니다. <br/><br/><br/><br/></span>
+<span style="color:brown; font: bold 12px verdana;"><br/><br/><br/>&nbsp;{$lang->pln_need_login}<br/><br/><br/><br/></span>
 </div>
 <!--@endif--><!--// 주간 계획 끝-->
 <!--@if($ind_mobile)-->
@@ -189,13 +181,13 @@ $tmp_desc_remark = "This week emphasis:&#x0A;&#x0A;";
 <!--@endif-->
 </div>
 </div>
-<!--@if($module_info->use_category == "Y" && count($category_list) && $module_info->display_category_button != "N")--><!--// 카테고리 탭 출력 -->
+<!--@if($ind_use_category == "Y" && count($category_list) && $module_info->display_category_button != "N")--><!--// 카테고리 탭 출력 -->
 <!--@foreach($category_list as $val)-->
 {@ $tmp_cartegory[$val->title] = array('title' => $val->title, 'category_srl' => $val->category_srl, 'color' => $val->color, 'grant' => $val->grant, 'selected' => $val->selected, 'document_count' => $val->document_count, 'depth' => $val->depth)}
 <!--@end-->
 {@ ksort($tmp_cartegory)}
-<div style="clear:both;">
-<!--@if($lang_type == "ko")-->{@ $label_cat_all="분류전체"}<!--@else-->{@ $label_cat_all="ALL"}<!--@end-->
+<div class="category_navigation"">
+{@ $label_cat_all=$lang->pln_cat_all}
 <button title="{$label_cat_all}" type="button" id="btn_all" onclick="doChgCategory(); return false;" class="button2" style='font-size:12px; padding:1px; cursor:pointer; color:#000000;'><!--@if(!$category)--><span class="strong"><!--@else--><span><!--@end-->{$label_cat_all}</span></button>
 <!--@foreach($tmp_cartegory as $val)-->
 <button title="{$val['title']}" type="button" id={$val['title']} onclick="doChgCategory({$val['category_srl']}); return false;" class="button2" style="font-size:12px; padding:1px; cursor:pointer; <!--@if($val['color'] != transparent)-->color:{$val['color']};<!--@end-->" > <!--@if($category == $val['category_srl'])--><span class="strong" ><!--@else--><span><!--@end-->{$val['title']}</span></button>
@@ -263,7 +255,14 @@ $tmparr6=explode("|#&Oslash;#|",$arr_plan[$Calmain_MM][$Calmain_DD]);// 일정/�
 <!--@else-->
 {@ $tmpfld = "<span class='weekday strong font_big'>".$label_mm.$Calmain_DD."</span>";}<!--// 평일-->
 <!--@end-->
-<!--@if($ind_duplicated != 'Y' && mktime(0,0,0,$Calmain_MM,$Calmain_DD,$Calmain_YY) < mktime(0,0,0,$todayMM,$todayDD,$todayYY) )--><!--// 중복일정입력금지시 과거일자는 링크없이.-->
+{@ $is_offday = FALSE;}
+<!--@if($ind_offday_naNew || $ind_offday_Label)--><!--// 휴무일 신규금지및 휴무일표시V430-->
+{@ $is_offday = in_array(strval($j), $dft_offday);}
+<!--@if(!$is_offday && $ind_holiday_off)-->
+{@ if($dft_holiday[$Calmain_MM][$Calmain_DD] != "") $is_offday = TRUE; //default holiday}
+<!--@end-->
+<!--@end-->
+<!--@if($is_offday && $ind_offday_naNew || $ind_reservation != 'N' && mktime(0,0,0,$Calmain_MM,$Calmain_DD,$Calmain_YY) < mktime(0,0,0,$todayMM,$todayDD,$todayYY) )--><!--// 휴무일 및 예약일정시 과거일자는 링크없이.-->
 {@ $templink = "<a href='#' class='past_day'>".$tmpfld."</a>";}
 <!--@else-->
 {@
@@ -348,7 +347,7 @@ $tmp_time = null;
 }
 <!--@else-->
 {@ $tmp_time = explode(",",$tmparr7[8]);}
-<!--@if($ind_duplicated == "N")--><!--// 중복금지-->
+<!--@if($ind_reservation == "T")--><!--// 예약(시간)-->
 {@
 $title_time = $tmp_time[0];
 $time_start = $tmp_time[0];
@@ -384,7 +383,9 @@ $time_end = date('H:i', mktime($tmp_etime_arr[0],$tmp_etime_arr[1],-1,1,1,2011))
 {@ $tooltip_desc = $time_disply_fld.$tmparr7[2];}
 <!--@end--><!--//툴팁표시조건-->
 {@ $title_disp = $tmparr7[0];}<!--// 출력될 일정 제목-->
-
+<!--@if($tmparr7[3] =="" && $tmparr7[6] =="")-->
+{@ $tmparr7[3] = $tmparr7[6] = "#77CC00";}
+<!--@end-->
 <!--@if($ind_bgcolor_option == "picker_bg")--><!--// 선택색상을->배경색-->
 {@
 $tmp_style = "style='clear:both; background-color:".$tmparr7[3]."; '";
@@ -438,6 +439,9 @@ $tmp_style2 = "style='background-color:".$tmparr7[3].";'";
 <!--@end--><!--// end if 일정 있으면 끝-->
 <!--@end--><!--// end foreach($tmparr6 as $val)-->
 <!--@end--><!--// end if(!empty($tmparr6[0])-->
+<!--@if($is_offday && $ind_offday_Label)--><!--// 휴무일-->
+{@ $out_html .= "<div class='offday strong'>".$lang->pln_off_day."</div>";}<!--//휴뮤일표시-->
+<!--@end-->
 {@ $ind_ua = planner123_main::fn_get_USER_AGENT()}
 <!--@if(($ind_ua == "IE6" || $ind_ua == "IE7") && $Calmain_yymmdd == $today_yymmdd)-->
 <td class = 'plan today_border'>{$out_html}</td><!--// 일정 출력-->

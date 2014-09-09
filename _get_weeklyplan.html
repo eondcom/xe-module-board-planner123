@@ -34,7 +34,8 @@
 ##  - Keysung Chung, 2009, 07, 28
 ##  - http://chungfamily.woweb.net/
 ## [changes]
-##  - PlannerXE123 ver. 4.1.0 : Keysung Chung, 2012, 04, 27
+##  - PlannerXE123 ver. 4.3.0 : Keysung Chung, 2014, 01, 01
+##  - PlannerXE123 ver. 4.1.0 : Keysung Chung, 2013, 03, 12
 ##  - PlannerXE123 ver. 4.0.0 : Keysung Chung, 2011, 08, 01
 ----------------------------------------------------------------------- -->
 <!--// *** planner123: get loged member's 주간 계획********************** -->
@@ -45,7 +46,8 @@
 {@
 $obj->module_srl = $module_info->module_srl;
 $obj->var_member_srl = $member_srl;// user srl
-$obj->extra_vars_serial = serialize("X");// 주간 계획 데이터: status = X
+$obj->extra_vars = "X"; //주간 계획 데이터: v430 쿼리 변경(XE v174에서 serialize 않는것으로 또 바뀜)
+$obj->extra_vars_serial = serialize("X"); //주간 계획 데이터: XE v174이전 호환을 위해(status = X)
 $obj->title = "weekplan_".$member_srl."_".$pYear;
 $query_path = $module_info->module."/skins/".$module_info->skin;// 쿼리경로
 $output = executeQueryArray($query_path.'.getDocumentsForPlanner_weekplan', $obj);// 주간계획 찾기
@@ -53,24 +55,20 @@ $output = executeQueryArray($query_path.'.getDocumentsForPlanner_weekplan', $obj
 <!--@if(!count($output->data))--><!--// 주간계획 없으면 레코드 만들고...-->
 <!--// 0=sun, 1=mon, 2=tue, 3=wed, 4=thu, 5=fri, 6=sat 7=sharpen, 8=role, 9=remark, -->
 <!--@for($j = 0; $j <= 53; $j++ )-->
-{@$tmp_myplan_fld .= "|@||@||@||@||@||@||@||@||@||=@=|";}
-<!--@end-->
-<!--@if($XE_version < "1.5")-->
-{@$obj->extra_vars = "X";}
-<!--@elseif($XE_version >= "1.5")-->
-{@$obj->extra_vars = serialize("X");}
+{@ $tmp_myplan_fld .= "|@||@||@||@||@||@||@||@||@||=@=|";}
 <!--@end-->
 {@
 $obj->content = $tmp_myplan_fld;
 $obj->is_secret = "Y";
 $obj->status = "SECRET";
+$obj->nick_name = $logged_info->nick_name;
+$obj->member_srl = $member_srl;// user srl
 $oDocumentModel = &getModel('document');
 $oDocumentController = &getController('document');
-$output = $oDocumentController->insertDocument($obj);
-$msg_code = 'success_registed';
+$output = $oDocumentController->insertDocument($obj,TRUE);
 }
 <!--@end-->
-{@$output = executeQueryArray($query_path.'.getDocumentsForPlanner_weekplan', $obj);}<!--// 주간계획 다시 찾기-->
+{@ $output = executeQueryArray($query_path.'.getDocumentsForPlanner_weekplan', $obj);}<!--// 주간계획 다시 찾기-->
 <!--@if(count($output->data))-->
 <!--@foreach($output->data as $key => $attribute_myplan)-->
 <!--@if($attribute_myplan->title == $obj->title)-->

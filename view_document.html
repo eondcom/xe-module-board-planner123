@@ -1,7 +1,5 @@
 <div class="boardRead">
-
 	<div class="boardReadHeader">
-		
 		<div class="titleArea">
 			<h3 class="title"><a href="{$oDocument->getPermanentUrl()}">{$oDocument->getTitle()}</a></h3>
 			<a href="{getUrl('category',$oDocument->get('category_srl'), 'document_srl', '')}" class="category">{$category_list[$oDocument->get('category_srl')]->title}</a>
@@ -27,7 +25,6 @@
 			<span class="ipAddress"><!--@if($grant->manager || $module_info->display_ip_address!='N')-->{$oDocument->getIpaddress()}<!--@end--></span>
 			<a href="{$oDocument->getPermanentUrl()}" class="permaLink">{$oDocument->getPermanentUrl()}</a>
 		</div>
-
 	</div>
 
 	<!--@if($oDocument->isExtraVarsExists() && (!$oDocument->isSecret() || $oDocument->isGranted()) )-->
@@ -36,14 +33,14 @@
 	    <!--@if($val->idx == 1 && $val->value < date('Ynj') && $module_info->allow_modify_schedule == 'N' && !$grant->manager )-->
 		    {@$ind_allow_change = 'N'}
 	    <!--@end-->
-		<!--@if($val->getValueHTML())-->
+		<!--@if($val->getValueHTML() && ($grant->manager || !$grant->manager && in_array($key, array(1,2,7)) || $key > 8))-->
 			<tr>
 				<th>{$val->name} :</th>
 				<!--@if($key == 7)-->
-					<!--@if($module_info->duplicated_schedule == 'Y')-->
-						<td>{str_replace(',',' -',$val->getValueHTML())}&nbsp;</td>  <!--// 시간 구분의 ','을 ' -'로...-->
+					<!--@if($module_info->reservation == 'N')-->
+						<td>{str_replace(',',' -',$val->getValueHTML())}&nbsp;</td><!--// 시간 구분의 ','을 ' -'로...-->
 					<!--@else-->
-						<td>{$val->getValueHTML()}&nbsp;</td>  <!--// 시간 구분을 ','로...-->
+						<td>{$val->getValueHTML()}&nbsp;</td><!--// 시간 구분을 ','로...-->
 					<!--@end-->
 				<!--@else-->
 					<td>{$val->getValueHTML()}&nbsp;</td>
@@ -57,16 +54,14 @@
 	<div class="boardReadBody" style="padding-left:10px;">
 		<!--@if($oDocument->isSecret() && !$oDocument->isGranted())-->
 			<form action="./" method="get" onsubmit="return procFilter(this, input_password)" class="secretMessage">
-			<input type="hidden" name="mid" value="{$mid}" />
-			<input type="hidden" name="page" value="{$page}" />
-			<input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
-
+				<input type="hidden" name="mid" value="{$mid}" />
+				<input type="hidden" name="page" value="{$page}" />
+				<input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
 				<p>&quot;{$lang->msg_is_secret}&quot;</p>
 				<dl>
 					<dt><label for="cpw">{$lang->password}</label> :</dt>
 					<dd><input type="password" name="password" id="cpw" class="inputText" /><span class="buttonOfficial"><input type="submit" value="{$lang->cmd_input}" /></span></dd>
 				</dl>
-
 			</form>
 		<!--@else-->
 			{$oDocument->getContent()}
@@ -111,15 +106,12 @@
             </dd>
         </dl>
 		<!--@end-->
-		
-        
         <!--@if(!$oDocument->getTrackbackCount())-->
 		<dl class="trackbackURL">
 			<dt>{$lang->trackback} : </dt>
 			<dd><a href="{$oDocument->getTrackbackUrl()}" onclick="return false;">{$oDocument->getTrackbackUrl()}</a></dd>
 		</dl>
         <!--@end-->
-		
 	</div>
 
     <div class="boardNavigation">
@@ -143,12 +135,9 @@
 
 </div>
 
-
-
 <!--@if($oDocument->allowTrackback())-->
     <!--#include("./trackback.html")-->
 <!--@end-->
-
 
 <!--@if($oDocument->allowComment())-->
     <a name="comment"></a>
@@ -163,7 +152,7 @@
         <input type="hidden" name="mid" value="{$mid}" />
         <input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
         <input type="hidden" name="comment_srl" value="" />
-		<!--@if(!$ind_mobile)--> <!--// 모바일이 아닐때만 실행 (에디터 관련 필드)-->
+		<!--@if(!$ind_mobile)--><!--// 모바일이 아닐때만 실행 (에디터 관련 필드)-->
 		    <!--@if($grant->manager && $module_info->auto_comment_text != null)-->
 		        <input type="hidden" name="content" value="{htmlspecialchars($module_info->auto_comment_text)}" />
 		    <!--@else-->
@@ -171,12 +160,12 @@
 	        <!--@end-->
 	    <!--@end-->
             <div class="boardWrite commentEditor">
-			  <!--@if($ind_mobile)--> <!--//모바일일 경우 에디터 대신-->
+			  <!--@if($ind_mobile)--><!--//모바일일 경우 에디터 대신-->
 		          <div>
 		              <label for="rText" class="fl">{$lang->comment}</label>
 		              <textarea name="content" cols="40" rows="5" id="rText"></textarea>
 		          </div>
-			  <!--@else-->  <!--//모바일이 아닐때는 에디터 사용-->
+			  <!--@else--><!--//모바일이 아닐때는 에디터 사용-->
 			    <div class="editor">{$oDocument->getCommentEditor()}</div>
 			  <!--@end-->
                 <div class="editorOption">

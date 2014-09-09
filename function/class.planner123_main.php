@@ -1050,11 +1050,11 @@ function fn_easterday_2($pYear) {
 
 //------------------------------------------------------------------------
     /**
-     * @function: fn_repeat_schedule($dispStart_stamp, $dispEnd_stamp, $plan_start, $plan_end, $plan_repeat_cycle, $plan_repeat_unit)
+     * @function: fn_repeat_schedule($dispStart_stamp, $dispEnd_stamp, $plan_start, $plan_end, $plan_repeat_cycle, $plan_repeat_unit, $Holiday)
      * @return  : array
-     * @brief:    반복일정이 적용되는 양력일자 어레이 리턴
+     * @brief:    반복일정이 적용되는 양력일자 어레이 리턴, V430:$Holiday추가 
      **/
-Function fn_repeat_schedule($dispStart_stamp, $dispEnd_stamp, $plan_start, $plan_end, $plan_repeat_cycle, $plan_repeat_unit) {
+Function fn_repeat_schedule($dispStart_stamp, $dispEnd_stamp, $plan_start, $plan_end, $plan_repeat_cycle, $plan_repeat_unit, $Holiday) {
 	/******************************************************
 	* 반복일정이 적용되는 일자에 "년도" 삽입
 	* 반복일정은 일정시작일을 기준으로 반복되며, 모든 반복일정은 일정 자체의 기간은 1일 간으로한다.
@@ -1141,7 +1141,10 @@ if ($plan_start_jd <= $dsp_end_jd && $plan_end_jd >= $dsp_start_jd) { // 기간�
 				$wrkYY = floor(($x-1)/12);	// 년
 				$wrkMM = ($x-1)%12 + 1;	// 월
 				$wrkDD = $startDD;	// 일
-				$aHoli[$wrkMM][$wrkDD] =  $wrkYY;
+				$wrk_jd = planner123_main::fn_calcDateToJD($wrkYY, $wrkMM, $wrkDD);// 일자 jd
+				if($wrk_jd >= $plan_start_jd && $wrk_jd <= $plan_end_jd) {
+					$aHoli[$wrkMM][$wrkDD] =  $wrkYY;
+				}
 			}
 		}
 		break;
@@ -1155,7 +1158,10 @@ if ($plan_start_jd <= $dsp_end_jd && $plan_end_jd >= $dsp_start_jd) { // 기간�
 				$wrkMM = ($x-1)%12 + 1;	// 월
 				$wrkDD = $startDD;	// 일
 				$temp01 = explode("-", planner123_main::fn_nsweekday($wrkYY, $wrkMM, $yoilcount, $pYoil));	// 해당n번째요일에 대응되는 일자 얻기
-				$aHoli[$temp01[1]][$temp01[2]] =  $wrkYY;
+				$wrk_jd = planner123_main::fn_calcDateToJD($temp01[0], $temp01[1], $temp01[2]);// 일자 jd
+				if($wrk_jd >= $plan_start_jd && $wrk_jd <= $plan_end_jd) {
+					$aHoli[$temp01[1]][$temp01[2]] =  $wrkYY;
+				}
 			}
 		}
 		break;
@@ -1169,7 +1175,10 @@ if ($plan_start_jd <= $dsp_end_jd && $plan_end_jd >= $dsp_start_jd) { // 기간�
 				$wrkMM = ($x-1)%12 + 1;	// 월
 				$wrkDD = $startDD;	// 일
 				$temp01 = explode("-", planner123_main::fn_nsweeknsweekday($wrkYY, $wrkMM, $weekcount, $pYoil));// 해당주/요일에 대응되는 일자 얻기
-				$aHoli[$temp01[1]][$temp01[2]] =  $wrkYY;
+				$wrk_jd = planner123_main::fn_calcDateToJD($temp01[0], $temp01[1], $temp01[2]);// 일자 jd
+				if($wrk_jd >= $plan_start_jd && $wrk_jd <= $plan_end_jd) {
+					$aHoli[$temp01[1]][$temp01[2]] =  $wrkYY;
+				}
 			}
 		}
 		break;
@@ -1181,7 +1190,10 @@ if ($plan_start_jd <= $dsp_end_jd && $plan_end_jd >= $dsp_start_jd) { // 기간�
 				$wrkMM = ($x-1)%12 + 1;	// 월
 				$wrkDD = $startDD;	// 일
 				$wrklastday= date("t", mktime(0, 0, 0, $wrkMM, 1, $wrkYY));	// 반복될 마지막 날자
-				$aHoli[$wrkMM][$wrklastday] =  $wrkYY;
+				$wrk_jd = planner123_main::fn_calcDateToJD($wrkYY, $wrkMM, $wrklastday);// 일자 jd
+				if($wrk_jd >= $plan_start_jd && $wrk_jd <= $plan_end_jd) {
+					$aHoli[$wrkMM][$wrklastday] =  $wrkYY;
+				}
 			}
 		}
 		break;
@@ -1195,7 +1207,10 @@ if ($plan_start_jd <= $dsp_end_jd && $plan_end_jd >= $dsp_start_jd) { // 기간�
 				$wrkMM = ($x-1)%12 + 1;	// 월
 				$wrkDD = $startDD;	// 일
 	            $temp01 = explode("-", planner123_main::fn_nslastweekday($wrkYY, $wrkMM, $yoilcount, $pYoil)); //끝에서 n번째요일에 대응되는 일자 얻기
-			    $aHoli[$temp01[1]][$temp01[2]] =  $wrkYY;
+				$wrk_jd = planner123_main::fn_calcDateToJD($temp01[0], $temp01[1], $temp01[2]);// 일자 jd
+				if($wrk_jd >= $plan_start_jd && $wrk_jd <= $plan_end_jd) {
+					$aHoli[$temp01[1]][$temp01[2]] =  $wrkYY;
+				}
 			}
 		}
 		break;
@@ -1203,6 +1218,7 @@ if ($plan_start_jd <= $dsp_end_jd && $plan_end_jd >= $dsp_start_jd) { // 기간�
 		case '7':
 		$wrk_a01 = explode('-', planner123_main::fn_sol2lun($startYY, $startMM, $startDD));  // 일정의 음력날자
 		For	($x = $dsp_start_jd; $x <= $dsp_end_jd; $x++) {	// 출력 기간
+		  if($x >= $plan_start_jd && $x <= $plan_end_jd) {
 			if(function_exists('jdtogregorian')) {
 				$wrk_date = jdtogregorian($x);
 			} else {
@@ -1214,6 +1230,7 @@ if ($plan_start_jd <= $dsp_end_jd && $plan_end_jd >= $dsp_start_jd) { // 기간�
 			if((($wrk_a02[0]*12 + $wrk_a02[1]) - ($wrk_a01[0]*12 + $wrk_a01[1])) % $plan_repeat_cycle == 0 && $wrk_a01[2] == $wrk_a02[2]) {
 				$aHoli[$wrk_arr[0]][$wrk_arr[1]] =  $wrk_arr[2];
 			}
+		  }
 		}
 		break;
 		// 8.개월(음력날자): 음력반복월이며 음력으로 같은번째 요일**********************************************
@@ -1223,6 +1240,7 @@ if ($plan_start_jd <= $dsp_end_jd && $plan_end_jd >= $dsp_start_jd) { // 기간�
 		$wrk01 = date("w", mktime(0, 0, 0, $startMM, $startDD ,$startYY));	// 요일
 		$wrk02 = ceil(($wrk_a01[2] + 6 - $wrk01) / 7);  // n번째주
 		For	($x = $dsp_start_jd; $x <= $dsp_end_jd; $x++) {	// 출력 기간
+		  if($x >= $plan_start_jd && $x <= $plan_end_jd) {
 			if(function_exists('jdtogregorian')) {
 				$wrk_date = jdtogregorian($x);
 			} else {
@@ -1236,6 +1254,7 @@ if ($plan_start_jd <= $dsp_end_jd && $plan_end_jd >= $dsp_start_jd) { // 기간�
 			if((($tmp_a01[0]*12 + $tmp_a01[1])-($wrk_a01[0]*12 + $wrk_a01[1])) % $plan_repeat_cycle == 0 && $wrk01 == $tmp01 && $wrk02 == $tmp02) {
 				$aHoli[$wrk_arr[0]][$wrk_arr[1]] =  $wrk_arr[2];
 			}
+		  }
 		}
 		break;
 		// 9.개월(날자-휴일이면다음근무일): 반복월 같은 날자, 단 토,일,휴일이면 다음 근무일(공과금 납부)**
@@ -1245,16 +1264,20 @@ if ($plan_start_jd <= $dsp_end_jd && $plan_end_jd >= $dsp_start_jd) { // 기간�
 				$wrkYY = floor(($x-1)/12);	// 년
 				$wrkMM = ($x-1)%12 + 1;	// 월
 				$wrkDD = $startDD;	// 일
-				$wrk_holiday = planner123_holiday::fn_HolidayChk($dispStart_stamp, $dispEnd_stamp);
-				for ($x_8 = 0; $x_8<7; $x_8++) {
-					$wrk_stmp_8 = mktime(0, 0, 0, $wrkMM, $wrkDD+$x_8 ,$wrkYY);
-					$wrkYY_8 = date("Y", $wrk_stmp_8);	// 일자-년
-					$wrkMM_8 = date("n", $wrk_stmp_8);	// 일자-월
-					$wrkDD_8 = date("j", $wrk_stmp_8);	// 일자-일
-					$wrk_yoil_8 = date("w", $wrk_stmp_8);
-					if($wrk_yoil_8 != 0 && $wrk_yoil_8 != 6 && !$wrk_holiday[$wrkMM_8][$wrkDD_8] ) {
-						$aHoli[$wrkMM_8][$wrkDD_8] =  $wrkYY_8;
-						break;
+				$wrk_jd = planner123_main::fn_calcDateToJD($wrkYY, $wrkMM, $wrkDD);// 일자 jd
+				if($wrk_jd >= $plan_start_jd && $wrk_jd <= $plan_end_jd) {
+					// $wrk_holiday = planner123_holiday::fn_HolidayChk($dispStart_stamp, $dispEnd_stamp); // V430에서 수정
+					$wrk_holiday = $Holiday;
+					for ($x_8 = 0; $x_8<7; $x_8++) {
+						$wrk_stmp_8 = mktime(0, 0, 0, $wrkMM, $wrkDD+$x_8 ,$wrkYY);
+						$wrkYY_8 = date("Y", $wrk_stmp_8);	// 일자-년
+						$wrkMM_8 = date("n", $wrk_stmp_8);	// 일자-월
+						$wrkDD_8 = date("j", $wrk_stmp_8);	// 일자-일
+						$wrk_yoil_8 = date("w", $wrk_stmp_8);
+						if($wrk_yoil_8 != 0 && $wrk_yoil_8 != 6 && !$wrk_holiday[$wrkMM_8][$wrkDD_8] ) {
+							$aHoli[$wrkMM_8][$wrkDD_8] =  $wrkYY_8;
+							break;
+						}
 					}
 				}
 			}
@@ -1439,13 +1462,81 @@ function fn_getClientOffsetTime(){
 // Check holiday file is exist in directory and return full name of holiday function file.
 function fn_getHolidayFileName($skinpath,$country_id) {
 	$filename = "class.planner123_holiday_";
-	$ind_01 = is_file($skinpath."function/".$filename.$country_id.".php");
+	$ind_01 = is_file($skinpath.$filename.$country_id.".php");
 	if($ind_01) {
 		$filename .= $country_id.".php";
 	} else {
 		$filename .= "default".".php";
 	}
 		return $filename;
+}
+
+//------------------------------------------------------------------------
+    /**
+     * @brief Get holiday data by country.
+     * @param $skinpath, $country_id, $dispStart_stamp, $dispEnd_stamp
+     * @return array
+     **/
+//  Get holiday data by country.
+function fn_getHolidayByCountry($skinpath, $country_id, $dispStart_stamp, $dispEnd_stamp) {
+	$filename = planner123_main::fn_getHolidayFileName($skinpath,$country_id);
+	if (!class_exists('planner123_holiday_'.'$country_id')) {
+		require_once ($skinpath.$filename);
+	}
+	if ($country_id == "kor") {
+		$Holiday_arr = planner123_holiday_kor::fn_HolidayChk($dispStart_stamp, $dispEnd_stamp);// 휴일
+	} else if ($country_id == "usa") {
+		$Holiday_arr = planner123_holiday_usa::fn_HolidayChk($dispStart_stamp, $dispEnd_stamp);
+	} else if ($country_id == "chn") {
+		$Holiday_arr = planner123_holiday_chn::fn_HolidayChk($dispStart_stamp, $dispEnd_stamp);
+	} else if ($country_id == "jpn") {
+		$Holiday_arr = planner123_holiday_jpn::fn_HolidayChk($dispStart_stamp, $dispEnd_stamp);
+	} else if ($country_id == "can") {
+		$Holiday_arr = planner123_holiday_can::fn_HolidayChk($dispStart_stamp, $dispEnd_stamp);
+	} else if ($country_id == "vnm") {
+		$Holiday_arr = planner123_holiday_vnm::fn_HolidayChk($dispStart_stamp, $dispEnd_stamp);
+	} else if ($country_id == "tur") {
+		$Holiday_arr = planner123_holiday_tur::fn_HolidayChk($dispStart_stamp, $dispEnd_stamp);
+	} else if ($country_id == "user") {
+		$Holiday_arr = planner123_holiday_user::fn_HolidayChk($dispStart_stamp, $dispEnd_stamp);
+	} else if ($country_id == "default") {
+		$Holiday_arr = planner123_holiday_default::fn_HolidayChk($dispStart_stamp, $dispEnd_stamp);
+	}
+		return $Holiday_arr;
+}
+
+//------------------------------------------------------------------------
+    /**
+     * @brief Get memorialday data by countrry.
+     * @param $skinpath, $country_id, $dispStart_stamp, $dispEnd_stamp
+     * @return array
+     **/
+//  Get memorialday data by countrry.
+function fn_getMemdayByCountry($skinpath, $country_id, $dispStart_stamp, $dispEnd_stamp) {
+	$filename = planner123_main::fn_getHolidayFileName($skinpath,$country_id);
+	if (!class_exists('planner123_holiday_'.'$country_id')) {
+		require_once ($skinpath.$filename);
+	}
+	if ($country_id == "kor") {
+		$Holiday_arr = planner123_holiday_kor::fn_MemdayChk($dispStart_stamp, $dispEnd_stamp);// 기념일
+	} else if ($country_id == "usa") {
+		$Holiday_arr = planner123_holiday_usa::fn_MemdayChk($dispStart_stamp, $dispEnd_stamp);
+	} else if ($country_id == "chn") {
+		$Holiday_arr = planner123_holiday_chn::fn_MemdayChk($dispStart_stamp, $dispEnd_stamp);
+	} else if ($country_id == "jpn") {
+		$Holiday_arr = planner123_holiday_jpn::fn_MemdayChk($dispStart_stamp, $dispEnd_stamp);
+	} else if ($country_id == "can") {
+		$Holiday_arr = planner123_holiday_can::fn_MemdayChk($dispStart_stamp, $dispEnd_stamp);
+	} else if ($country_id == "vnm") {
+		$Holiday_arr = planner123_holiday_vnm::fn_MemdayChk($dispStart_stamp, $dispEnd_stamp);
+	} else if ($country_id == "tur") {
+		$Holiday_arr = planner123_holiday_tur::fn_MemdayChk($dispStart_stamp, $dispEnd_stamp);
+	} else if ($country_id == "user") {
+		$Holiday_arr = planner123_holiday_user::fn_MemdayChk($dispStart_stamp, $dispEnd_stamp);
+	} else if ($country_id == "default") {
+		$Holiday_arr = planner123_holiday_default::fn_MemdayChk($dispStart_stamp, $dispEnd_stamp);
+	}
+		return $Holiday_arr;
 }
 
 //------------------------------------------------------------------------
@@ -1696,6 +1787,7 @@ function fn_install_extra_keys($module_srl){
 	return true;
 	}
 }
+
 
 //=========================================================================
 } // end of class

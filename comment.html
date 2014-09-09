@@ -12,8 +12,8 @@
 
 		{@ $_comment_list = $oDocument->getComments() }
 		<!--@foreach($_comment_list as $key => $comment)-->
-				<div class="item <!--@if($comment->get('depth'))-->itemReply<!--@end-->" id="comment_{$comment->comment_srl}">
-					<div class="indent" <!--@if($comment->get('depth'))--> style="margin-left:{($comment->get('depth'))*15}px" <!--@end-->>
+			<div class="item <!--@if($comment->get('depth'))-->itemReply<!--@end-->" id="comment_{$comment->comment_srl}">
+				<div class="indent" <!--@if($comment->get('depth'))--> style="margin-left:{($comment->get('depth'))*15}px" <!--@end-->>
 					
 					<div class="itemAside">
                         <!--@if($comment->getProfileImage())-->
@@ -64,32 +64,32 @@
 							</dl>
 						</form>
 					<!--@else-->
-					{$comment->getContent(false)}
+						{$comment->getContent(false)}
 
-					<!--@if($comment->hasUploadedFIles())-->
-					<dl class="attachedFile">
-						<dt><img src="./img/common/iconFiles.gif" width="27" height="11" alt="{$lang->uploaded_file}" /> <button type="button" class="fileToggle" onclick="jQuery(this).parents('dl.attachedFile').toggleClass('open');return false;">{$lang->uploaded_file} ({$comment->get('uploaded_count')})</button></dt>
-						<dd>
+						<!--@if($comment->hasUploadedFIles())-->
+						<dl class="attachedFile">
+							<dt><img src="./img/common/iconFiles.gif" width="27" height="11" alt="{$lang->uploaded_file}" /> <button type="button" class="fileToggle" onclick="jQuery(this).parents('dl.attachedFile').toggleClass('open');return false;">{$lang->uploaded_file} ({$comment->get('uploaded_count')})</button></dt>
+							<dd>
 							<ul class="files">
 								{@ $_uploaded_files = $comment->getUploadedFiles() }
 								<!--@foreach($_uploaded_files as $key => $file)-->
 								<li><a href="{getUrl('')}{$file->download_url}">{$file->source_filename} <span class="bubble">[File Size:{FileHandler::filesize($file->file_size)}/Download{number_format($file->download_count)}]</span></a></li>
 								<!--@end-->
 							</ul>
-						</dd>
-					</dl>
-					<!--@end-->
+							</dd>
+						</dl>
+						<!--@end-->
 
-					<ul class="option">
-					<!--@if($is_logged)-->
-						<li class="wouldYou"><a href="#popup_menu_area" class="comment_{$comment->comment_srl}">{$lang->cmd_comment_do}</a></li>
-					<!--@end-->
+						<ul class="option">
+						<!--@if($is_logged)-->
+							<li class="wouldYou"><a href="#popup_menu_area" class="comment_{$comment->comment_srl}">{$lang->cmd_comment_do}</a></li>
+						<!--@end-->
 						<li><a href="{getUrl('act','dispBoardReplyComment','comment_srl',$comment->comment_srl)}">{$lang->cmd_reply}</a></li> 
-					<!--@if($comment->isGranted() || !$comment->get('member_srl'))-->
-						<li><a href="{getUrl('act','dispBoardModifyComment','comment_srl',$comment->comment_srl)}">{$lang->cmd_modify}</a></li> 
-						<li><a href="{getUrl('act','dispBoardDeleteComment','comment_srl',$comment->comment_srl)}">{$lang->cmd_delete}</a></li>
-					<!--@end-->
-					</ul>
+						<!--@if($comment->isGranted() || !$comment->get('member_srl'))-->
+							<li><a href="{getUrl('act','dispBoardModifyComment','comment_srl',$comment->comment_srl)}">{$lang->cmd_modify}</a></li> 
+							<li><a href="{getUrl('act','dispBoardDeleteComment','comment_srl',$comment->comment_srl)}">{$lang->cmd_delete}</a></li>
+						<!--@end-->
+						</ul>
 
 					<!--@end-->
 
@@ -97,12 +97,12 @@
 					
 				</div>
 				<!--@if($comment->get('depth'))-->
-			<!--@end-->
+				<!--@end-->
 			
-		</div>
+			</div>
 		<!--@end-->
 
-</div>
+	</div>
 
     <!--@if($oDocument->comment_page_navigation)-->
     <div class="pagination">

@@ -1,3 +1,6 @@
+{@
+$oDocumentModel = &getModel('document');
+}
 <form action="./" method="get" class="boardListForm">
 <fieldset>
 <legend>List of Articles</legend>
@@ -60,11 +63,17 @@
 <!--@foreach($list_config as $key => $val)--><!--// 목록 설정으로 table theader 생성 -->
 <!--@if($val->idx == -1)--><!--// 기본 컨텐츠일 경우 -->
 <!--@if($val->type == 'no')--><!--// 컨텐츠 종류에 따라서 출력 -->
-<td class="notice">
+<td class="notice" style="padding-right: 0; padding-left:0;">
 <!--@if($_status_arr == null)-->
-{@$_status_arr = array('A'=>'기본', 'F'=>'완료', 'R'=>'취소', 'X'=>'PLN') }
+{@ $_status_arr = array('A'=>'기본', 'F'=>'완료', 'R'=>'취소', 'X'=>'PLN') }
 <!--@endif-->
-{@$_doc_status = unserialize($document->get('extra_vars'))}
+{@ $oDocument = $oDocumentModel->getDocument($document->document_srl);}
+{@ $plan_doc_extra_vars = $oDocument->get('extra_vars')}
+<!--@if($plan_doc_extra_vars == 'A' || $plan_doc_extra_vars == 'F' || $plan_doc_extra_vars == 'R' || $plan_doc_extra_vars == 'X')-->
+{@ $_doc_status = $plan_doc_extra_vars;}<!--// 취소일정위해 추가(v430: XEV174부터 serialize 않음)-->
+<!--@else-->
+{@ $_doc_status = unserialize($plan_doc_extra_vars);}<!--// XEV174이전 호환을 위해-->
+<!--@end-->
 <!--@if($_doc_status != null && $_doc_status != "A")-->
 <span class="notice">{$_status_arr[$_doc_status]}</span>
 <!--@else-->
@@ -149,11 +158,17 @@
 <!--@foreach($list_config as $key => $val)--><!--// 목록 설정으로 table theader 생성 -->
 <!--@if($val->idx == -1)--><!--// 기본 컨텐츠일 경우 -->
 <!--@if($val->type == 'no')--><!--// 컨텐츠 종류에 따라서 출력 -->
-<td class="num">
+<td class="num" style="padding-right: 0; padding-left:0;">
 <!--@if($_status_arr == null)-->
-{@$_status_arr = array('A'=>'기본', 'F'=>'완료', 'R'=>'취소', 'X'=>'PLN') }
+{@ $_status_arr = array('A'=>'기본', 'F'=>'완료', 'R'=>'취소', 'X'=>'PLN') }
 <!--@endif-->
-{@$_doc_status = unserialize($document->get('extra_vars'))}
+{@ $oDocument = $oDocumentModel->getDocument($document->document_srl);}
+{@ $plan_doc_extra_vars = $oDocument->get('extra_vars')}
+<!--@if($plan_doc_extra_vars == 'A' || $plan_doc_extra_vars == 'F' || $plan_doc_extra_vars == 'R' || $plan_doc_extra_vars == 'X')-->
+{@ $_doc_status = $plan_doc_extra_vars;}<!--// 취소일정위해 추가(v430: XEV174부터 serialize 않음)-->
+<!--@else-->
+{@ $_doc_status = unserialize($plan_doc_extra_vars);}<!--// XEV174이전 호환을 위해-->
+<!--@end-->
 <!--@if($_doc_status != null && $_doc_status != "A")-->
 <span class="notice">{$_status_arr[$_doc_status]}</span>
 <!--@else-->

@@ -30,21 +30,21 @@
 ## NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 ## OF THE POSSIBILITY OF SUCH DAMAGE.
 ##
+##  - 2014.06.01 : Ver 4.4.0. - Change Jquery format.
 ##  - 2011.07.01 : Ver 4.0.0. - Add time table. 
 **/
 /******************************************************************************/
 
 /* calendar(Monthly) - 월단위 일정 출력 */
-function doDisplaySchedule(schedule_html_json,rs_style,ind_mobile)
-{
-	var $j = jQuery.noConflict();
-	var tr_width, td_width, position, sg_height, cnt_low=0, cnt_day=0, udt_day=0, test_week=0,
+function doDisplaySchedule(schedule_html_json,rs_style,ind_mobile) {
+jQuery(function($){ 
+	var tr_width=0, td_width=0, position=0, sg_height=0, cnt_low=0, cnt_day=0, udt_day=0, test_week=0,
 		test_lenght=0,
 		outhtml = "",
 		low_pos_top = 0,
 		row_height = 16,
-		tr_width = $j("tr:#planner_week0").width();
-//	var	arrayFromPHP = {$schedule_html_json};  // PHP에서 만든 일정 어레이를 받아서
+		tr_width = $("#planner_week0").width();
+	//var	arrayFromPHP = {$schedule_html_json};  // PHP에서 만든 일정 어레이를 받아서
 	var	arrayFromPHP = schedule_html_json;  // PHP에서 만든 일정 어레이를 받아서
   if (arrayFromPHP && tr_width > 0) {		// 처리할 일정이 있으면 아래내용처리
 	var cnt_sg = arrayFromPHP.length;		// 일정 갯수를 저장 하고
@@ -58,7 +58,7 @@ function doDisplaySchedule(schedule_html_json,rs_style,ind_mobile)
 			}
 		}
 
-	$j.each(arrayFromPHP, function (i, elem) {	// 각 일정 마다
+	$.each(arrayFromPHP, function (i, elem) {	// 각 일정 마다
 		var pln_week = Number(elem.week),		// 주 순서
 			pln_weekday = Number(elem.weekday),	// 요일
 			pln_syymmdd = elem.yymmdd,			// 개별일정일 (yyyy-m-d)
@@ -77,18 +77,18 @@ function doDisplaySchedule(schedule_html_json,rs_style,ind_mobile)
 					if (test_lenght >= pln_length) {		// 빈공간이 충분하면
 						low_pos_top = row_height * cnt_low;	// 해당줄의 top 위치를 계산 
 
-						position_week = $j("#week_schedule_" + pln_week).position();	// 주별 장기일정 콘테이너 위치 저장
-						position = $j("#day_schedule_container_" + pln_syymmdd).position();	// 일별 하루일정 콘테이너 위치 저장
+						position_week = $("#week_schedule_" + pln_week).position();	// 주별 장기일정 콘테이너 위치 저장
+						position = $("#day_schedule_container_" + pln_syymmdd).position();	// 일별 하루일정 콘테이너 위치 저장
 						outhtml += "<div id='wc-" + pln_week + "-" + i + "-" + elem.pln_srl + "' class='drag' style='position: absolute; z-index:5; left:" 
 							+ (position.left - position_week.left) + "px; top: " +( low_pos_top) + "px; width:" + (tr_width * pln_length/7) + "px;'>" + elem.html +"</div>";  //위치 계산후 코드생성
 						ind_find = "Y";
 						test_lenght = 0;
 
 						if (pln_length == 1) {	// 하루일정일 경우 일정 높이구하고
-						$j('#dummy').width(tr_width/7).empty();
-						$j(elem.html).appendTo("#dummy");
-						sg_height = ($j('#dummy > div').height());
-						// alert (sg_height +" " +$j('#dummy').width());
+						$('#dummy').width(tr_width/7).empty();
+						$(elem.html).appendTo("#dummy");
+						sg_height = ($('#dummy > div').height());
+						// alert (sg_height +" " +$('#dummy').width());
 						}
 
 						// 하루일정으로 그림있는경우, 하루일정이면서 높이가 한줄 이상, 기념일, 휴일일경우 (V220: a를 c로 변경)
@@ -98,15 +98,15 @@ function doDisplaySchedule(schedule_html_json,rs_style,ind_mobile)
 							} else {	// 일정
 								outhtml = "<div id='dc-" + i + "-" + elem.pln_srl + "' class='drag' >" + elem.html +"</div>";  // 코드 생성 2
 							}
-							$j(outhtml).appendTo('#day_schedule_container_'+ pln_syymmdd);   // 일별 콘테이너 출력
+							$(outhtml).appendTo('#day_schedule_container_'+ pln_syymmdd);   // 일별 콘테이너 출력
 							outhtml = null;
 							break;		// 완료되어 for 빠져 나가고
 						} else {
-							$j(outhtml).appendTo('#week_schedule_'+ pln_week);   // 주별로 콘테이너 출력
+							$(outhtml).appendTo('#week_schedule_'+ pln_week);   // 주별로 콘테이너 출력
 							outhtml = null;
 							 if (rs_style == "N") {  //반복일정표시 (rs_style : Y=제목한번, N=제목여러번, S=일정분리 (N일때만 해당 div있음)
-								$j(".inside").css({"width":Math.floor(tr_width/7)});
-								$j(".inside_end").css({"width":Math.floor(tr_width/7)-4});
+								$(".inside").css({"width":Math.floor(tr_width/7)});
+								$(".inside_end").css({"width":Math.floor(tr_width/7)-4});
 							 }
 							// 어레이에 해당칸을 사용했다는 표시해놓고
 							for (udt_day = pln_weekday; udt_day<(pln_weekday + pln_length); udt_day++) {  
@@ -117,9 +117,9 @@ function doDisplaySchedule(schedule_html_json,rs_style,ind_mobile)
 								//wrk_date = pln_date + cnt_d; //v420
 								var tmp_date = new Date(Number(pln_syymmdd_arr[0]), Number(pln_syymmdd_arr[1])-1, Number(pln_syymmdd_arr[2]) + cnt_d);
 								var wrk_date = tmp_date.getFullYear() + "-" + Number(tmp_date.getMonth()+1) + "-" + Number(tmp_date.getDate());
-								cur_height = $j("#day_space_"+wrk_date).height();
+								cur_height = $("#day_space_"+wrk_date).height();
 								if ((cnt_low + 1)*row_height > cur_height ) {
-									$j("#day_space_"+wrk_date).height((cnt_low + 1)*row_height +1);
+									$("#day_space_"+wrk_date).height((cnt_low + 1)*row_height +1);
 								}
 							}
 							break;	// 완료되어 for 빠져 나가고
@@ -138,66 +138,68 @@ function doDisplaySchedule(schedule_html_json,rs_style,ind_mobile)
   }  // '처리할 일정이 있으면' 루프끝
 
   //  div planner123을 visibility:hidden 으로 했을때 대비
-  $j('#planner123').css("visibility", "visible");	
+  $('#planner123').css("visibility", "visible");	
   //  drag & drop test (drop을 위해서는 아마도 모듈단계에서 extra value update 지원이 필요할듯..)
   if (!ind_mobile) {
-	if( typeof $j().draggable == 'function' ) { 
-  		$j('.drag').draggable({ revert: 'invalid', zIndex: 6 });// 각 일정을 draggable로...
+	if( typeof $().draggable == 'function' ) { 
+  		$('.drag').draggable({ revert: 'invalid', zIndex: 6 });// 각 일정을 draggable로...
 	}
   }
 
   /* mouse over배경색 조정을 위하여... */
   var ind_hover = "";
   var id_cell = "";
-  $j('.planner_calendar td').hover(
+  $('.planner_calendar td').hover(
     function () {
 		id_cell = this;
-		$j(".planner_calendar .schedule_view").hover(
+		$(".planner_calendar .schedule_view").hover(
 			function () {
-				$j(id_cell).removeClass("hover");
+				$(id_cell).removeClass("hover");
 				ind_hover = "N";
 			},
 			function () {
 				ind_hover = "Y";
-				$j(id_cell).addClass("hover");
+				$(id_cell).addClass("hover");
 			}
 		);
 		if (ind_hover == "Y" || ind_hover == "") {
-			$j(this).addClass("hover");
+			$(this).addClass("hover");
 		}
 	},
     function () {
-		$j(this).removeClass("hover");
+		$(this).removeClass("hover");
     }
   ); // end mouse over
 
+}); 
 }
 
 /******************************************************************************/
 /* calendar(Monthly) - 일정폭 조정 */
 function doResizeScheduleWidth(schedule_html_json) {
-	var $j = jQuery.noConflict();
-	var	tr_width = $j("tr:#planner_week0").width();
-//    var arrayFromPHP = {$schedule_html_json};  // PHP에서 만든 일정 어레이를 받아서
+jQuery(function($){ 
+	var	tr_width = $("#planner_week0").width();
+	//var arrayFromPHP = {$schedule_html_json};  // PHP에서 만든 일정 어레이를 받아서
 	var	arrayFromPHP = schedule_html_json;  // PHP에서 만든 일정 어레이를 받아서
 	if (arrayFromPHP) {  // 처리할 일정이 있으면 아래내용처리
-		$j.each(arrayFromPHP, function (i, elem) {	// 각 일정 마다
-			if ($j('#wc-' + i + '-' + elem.pln_srl).length){
-				var pln_week = Number(elem.week),		// 주 순서
-					pln_weekday = Number(elem.weekday),	// 요일
-					pln_syymmdd = elem.yymmdd,			// 개별일정일 (yyyy-m-d)
-					pln_date = Number(elem.date),		// 일
-					pln_length = Number(elem.length);	// 일정기간
+		$.each(arrayFromPHP, function (i, elem) {	// 각 일정 마다
+			var pln_week = Number(elem.week),		// 주 순서
+				pln_weekday = Number(elem.weekday),	// 요일
+				pln_syymmdd = elem.yymmdd,			// 개별일정일 (yyyy-m-d)
+				pln_date = Number(elem.date),		// 일
+				pln_length = Number(elem.length);	// 일정기간
 
+			if ($('#wc-' + pln_week + '-' + i + '-' + elem.pln_srl).length){
 				var pln_width_new = tr_width * pln_length/7;
-				position_week = $j("#week_schedule_" + pln_week).position();	// 주별 장기일정 콘테이너 위치 저장
-				position = $j("#day_schedule_container_" + pln_syymmdd).position();	// 일별 하루일정 콘테이너 위치 저장
-				$j('#wc-' + i + '-' + elem.pln_srl).width(pln_width_new);  // 각장기 일정 폭 조정
-				$j('#wc-' + i + '-' + elem.pln_srl).css({left: (position.left - position_week.left) + "px"});  // 각장기 left 위치 조정
+				position_week = $("#week_schedule_" + pln_week).position();	// 주별 장기일정 콘테이너 위치 저장
+				position = $("#day_schedule_container_" + pln_syymmdd).position();	// 일별 하루일정 콘테이너 위치 저장
+				$('#wc-' + pln_week + '-' + i + '-' + elem.pln_srl).width(pln_width_new);  // 각장기 일정 폭 조정
+				$('#wc-' + pln_week + '-' + i + '-' + elem.pln_srl).css({left: (position.left - position_week.left) + "px"});  // 각장기 left 위치 조정
 				// alert("day:" + elem.date + " tr:" + tr_width + " td:" + tr_width/7 +" width:" + pln_width_new);	// 검사용
 			}
 		});
 	}
+}); 
 }
 
 /******************************************************************************/
@@ -213,17 +215,17 @@ function doChgCategory(category_srl) {
 /******************************************************************************/
 /* calendar(Myplan) - weekly action plan 작성 */
 function doUpdateMyplan(module_name, module_srl, document_srl, week_count, weekday) { 
-	var $j = jQuery.noConflict();
+jQuery(function($){ 
 	//alert(module_name +"-"+ module_srl +"-"+ document_srl +"-"+ week_count +"-"+ weekday);
-	var content = $j('#myplan_content').val();
-	var title = $j('#myplan_title').val();
+	var content = $('#myplan_content').val();
+	var title = $('#myplan_title').val();
 	var content_arr = new Array();
-	content_arr = explode('|=@=|',$j('#myplan_content').val());
+	content_arr = explode('|=@=|',$('#myplan_content').val());
 	var content_arr_week = explode('|@|',content_arr[week_count]);
-	var sharpen = str_replace("'","`", $j('#sharpen').val());
-	var role = str_replace("'","`", $j('#role').val());
-	var remark = str_replace("'","`", $j('#remark').val());
-	var task = str_replace("'","`", $j('#task').val());
+	var sharpen = str_replace("'","`", $('#sharpen').val());
+	var role = str_replace("'","`", $('#role').val());
+	var remark = str_replace("'","`", $('#remark').val());
+	var task = str_replace("'","`", $('#task').val());
 	content_arr_week[7] = sharpen;
 	content_arr_week[8] = role;
 	content_arr_week[9] = remark;
@@ -251,14 +253,17 @@ function doUpdateMyplan(module_name, module_srl, document_srl, week_count, weekd
 			exec_xml('board', 'procBoardInsertDocument', new_doc, completeCallModuleAction);
         break;
     }
+}); 
 }
 
 /* *************************************************************************** */
 /* calendar(Time table) - 주단위 render grid for time table */
 function fnMakeTableGrid(dispStart_date, dispEnd_date,ind_mobile){
+jQuery(function($){ 
+
 	//var contenttable_width = 1149;
 	var	grid_table;	// 코드저장 변수
-	var disp_area_width = $j('#planner123').width();  // 전체 화면 폭
+	var disp_area_width = $('#planner123').width();  // 전체 화면 폭
 	var	label_width = 130;	// 레이블 폭은 130px로 고정
 	var	content_div_width = disp_area_width - label_width;
 	var scroll_width = content_div_width -17;  // 스크롤바폭 조정
@@ -370,19 +375,22 @@ function fnMakeTableGrid(dispStart_date, dispEnd_date,ind_mobile){
 	grid_table += "</div></td></tr></table>";
 	
 	// output
-	$j(grid_table).appendTo('#Timetable_div');
+	$(grid_table).appendTo('#Timetable_div');
+}); 
 }
 
 /* *************************************************************************** */
 /* calendar(Time table) - 주단위 render schedule in the time table */
 function fnMakeWeeklySchedule(schedule_html_json, dispStart_stamp, dispEnd_stamp){
+jQuery(function($){ 
+
 	var	arrayFromPHP = schedule_html_json;  // PHP에서 만든 일정 어레이
 	var start = Number(dispStart_stamp);
 	var end = Number(dispEnd_stamp);
 	//var tmp_date = new Date();
   if (arrayFromPHP)	// 자료가 있으면 실행
   {
-	$j.each(arrayFromPHP, function (i, elem) {	// 각 일정 마다
+	$.each(arrayFromPHP, function (i, elem) {	// 각 일정 마다
 		var pln_week = Number(elem.week),		// 주 순서
 			pln_weekday = Number(elem.weekday),	// 요일
 			pln_month = Number(elem.month),		// 일정 월
@@ -397,8 +405,8 @@ function fnMakeWeeklySchedule(schedule_html_json, dispStart_stamp, dispEnd_stamp
 		  {
 			tmp_id = "#label_td_"+pln_month+"-"+j;  // label container
 			tmp_fld = "<div class='label underline right'>"+elem.html+"</div>";  //label
-			$j(tmp_fld).appendTo(tmp_id); // label output
-			$j(tmp_id+' img').remove();	// img 태그제거
+			$(tmp_fld).appendTo(tmp_id); // label output
+			$(tmp_id+' img').remove();	// img 태그제거
 			tmp_fld = null;
 
 			// 시작종료 시각 구하기 (분단위 제외)
@@ -418,88 +426,92 @@ function fnMakeWeeklySchedule(schedule_html_json, dispStart_stamp, dispEnd_stamp
 			//alert(stime+"-"+etime);
 
 			tmp_id = "#bg_c"+stime;		// 시작컬럼 ID
-			s_position = $j(tmp_id).position();
+			s_position = $(tmp_id).position();
 			s_position_left = s_position.left;  // 시작 위치.
 			tmp_id = "#bg_c"+etime;		// 종료컬럼 ID
-			e_position = $j(tmp_id).position();
-			e_position_right = e_position.left + $j(tmp_id).width();   // 끝 위치
+			e_position = $(tmp_id).position();
+			e_position_right = e_position.left + $(tmp_id).width();   // 끝 위치
 			tmp_width = e_position_right - s_position_left +1;	// 타임테이블에 표시될 일정 폭(시간)
 			// content output
 			tmp_id = "#content_td_"+pln_month+"-"+j;	// content row ID
 			tmp_fld = "<div class='underline of_hidden'>";
 			tmp_fld += "<div style='position:relative; left:"+s_position_left+"px; width:"+tmp_width+"px;'>"+elem.html+"</div>";  // build element
 			tmp_fld += "</div>";
-			$j(tmp_fld).appendTo(tmp_id); //  output content elemwnt
-			$j(tmp_id+' img').remove();	// remove img tag
+			$(tmp_fld).appendTo(tmp_id); //  output content elemwnt
+			$(tmp_id+' img').remove();	// remove img tag
 		  }	// end for
 		} 
 		else if (pln_segtype == 'b') {	//휴일
 			tmp_id = "#label_date_"+pln_month+"-"+pln_date;
-			$j(tmp_id).removeClass('saturday weekday');
-			$j(tmp_id).addClass('holiday');	// red color
+			$(tmp_id).removeClass('saturday weekday');
+			$(tmp_id).addClass('holiday');	// red color
 		}
 	});
-	$j('#Timetable_div .schedule_view').css('border','');
+	$('#Timetable_div .schedule_view').css('border','');
   }
+
+}); 
 }
 
 /* *************************************************************************** */
 /* calendar(Time table) - 주단위 Adjust header size of time table  */
 function fnAdjTimeTable(){
-	var colCount=$j('#header_table_tr>th').length; //get total number of column
+jQuery(function($){ 
+
+	var colCount=$('#header_table_tr>th').length; //get total number of column
 	var m=0;
 	var n=0;
 	var brow='mozilla';
 
-	jQuery.each(jQuery.browser, function(i, val) {
-	if(val==true){
-	brow=i.toString();
-	}
+	$.each($.browser, function(i, val) {
+		if(val==true){
+		brow=i.toString();
+		}
 	});
 
-	$j('.header_cell').each(function(i){  // 시간(1-24) 헤더 폭 조정
+	$('.header_cell').each(function(i){  // 시간(1-24) 헤더 폭 조정
 	if(m<colCount){
 		if(brow=='mozilla'){  //mozilla_Firefox 
-			$j('#header_empty_cell').css("width",$j('.lable_td').innerWidth()); //for adjusting empty cell
-			$j(this).css('width',$j('#contenttable_bg td:eq('+m+')').innerWidth()-1);//for assigning width to table Header div
+			$('#header_empty_cell').css("width",$('.lable_td').innerWidth()); //for adjusting empty cell
+			$(this).css('width',$('#contenttable_bg td:eq('+m+')').innerWidth()-1);//for assigning width to table Header div
 		}
 		else if(brow=='msie'){  //MSIE
-			$j('#header_empty_cell').css("width",$j('.lable_td').innerWidth()-1);
-			$j(this).css('width',$j('#contenttable_bg td:eq('+m+')').innerWidth()-1);//In IE there is difference of 2 px
+			$('#header_empty_cell').css("width",$('.lable_td').innerWidth()-1);
+			$(this).css('width',$('#contenttable_bg td:eq('+m+')').innerWidth()-1);//In IE there is difference of 2 px
 		}
 		else if(brow=='safari'){  //Google_Crom & Safari
-			$j('#header_empty_cell').css("width",$j('.lable_td').width()+1);
-			$j(this).css('width',$j('#contenttable_bg td:eq('+m+')').width()+1);;//In Crom there is difference of 1 px
+			$('#header_empty_cell').css("width",$('.lable_td').width()+1);
+			$(this).css('width',$('#contenttable_bg td:eq('+m+')').width()+1);;//In Crom there is difference of 1 px
 		}
 		else{
-			$j('#header_empty_cell').css("width",$j('.lable_td').innerWidth());
-			$j(this).css('width',$j('#contenttable_bg td:eq('+m+')').width());
+			$('#header_empty_cell').css("width",$('.lable_td').innerWidth());
+			$(this).css('width',$('#contenttable_bg td:eq('+m+')').width());
 		}
 	}
 	m++;
 	});
 /*
-	$j('.label_td').each(function(i){	//좌측 레이블(날자) 높이조정 -> 그냥 CSS로 지정하는것으로 재수정함
+	$('.label_td').each(function(i){	//좌측 레이블(날자) 높이조정 -> 그냥 CSS로 지정하는것으로 재수정함
 	if(brow=='mozilla'){
-		$j(this).css('height',$j('#contenttable_table td:eq('+n+')').outerHeight());//for providing height using scrollable table column height
+		$(this).css('height',$('#contenttable_table td:eq('+n+')').outerHeight());//for providing height using scrollable table column height
 	}else if(brow=='msie'){
-		$j(this).css('height',$j('#contenttable_table td:eq('+n+')').innerHeight()+1);
+		$(this).css('height',$('#contenttable_table td:eq('+n+')').innerHeight()+1);
 	}else if(brow=='safari'){
-		$j(this).css('height',$j('#contenttable_table td:eq('+n+')').height()+1);
+		$(this).css('height',$('#contenttable_table td:eq('+n+')').height()+1);
 	}else{
-		$j(this).css('height',$j('#contenttable_table td:eq('+n+')').height());
+		$(this).css('height',$('#contenttable_table td:eq('+n+')').height());
 	}
 	n++;
 	});
 */
 	var scroll_height = 300;  // scroll bar height  (스크롤 영역 놀이를 300px로...)
-	$j('#contenttable_bg').css('height',$j('#contenttable_table').height()); //for providing height of vertical line
-	if($j('#contenttable_table').height() <= scroll_height){
-	    $j('#contenttable_div').css('height',$j('#contenttable_table').height()+19); //for providing height of content table
-	    $j('#label_div').css('height',$j('#contenttable_table').height()+3); //for providing height of label
+	$('#contenttable_bg').css('height',$('#contenttable_table').height()); //for providing height of vertical line
+	if($('#contenttable_table').height() <= scroll_height){
+	    $('#contenttable_div').css('height',$('#contenttable_table').height()+19); //for providing height of content table
+	    $('#label_div').css('height',$('#contenttable_table').height()+3); //for providing height of label
 	} else {
-	    $j('#contenttable_div').css('height',scroll_height+19); //for providing height of content table
-	    $j('#label_div').css('height',scroll_height+2); //for providing height of label
+	    $('#contenttable_div').css('height',scroll_height+19); //for providing height of content table
+	    $('#label_div').css('height',scroll_height+2); //for providing height of label
 	}
 
 	// 화면에 보일 타임 테이블 시작 위치 조정 (하루전, 1시간전 부터...)
@@ -507,11 +519,11 @@ function fnAdjTimeTable(){
 	var today_date = new Date();  // today
 	var today_hh = today_date.getHours(); // 0-23
 	if ((today_hh - 1) <= 0  ) { 
-		tmp_colposition = $j("#bg_c"+0).position();// 보이기 시작할 컬럼 ID (2시 이전은 0시부터)
-		$j('#contenttable_div').scrollLeft(tmp_colposition.left);
+		tmp_colposition = $("#bg_c"+0).position();// 보이기 시작할 컬럼 ID (2시 이전은 0시부터)
+		$('#contenttable_div').scrollLeft(tmp_colposition.left);
 	} else {
-		tmp_colposition = $j("#bg_c"+ (today_hh-1) ).position();// 1시간 전부터
-		$j('#contenttable_div').scrollLeft(tmp_colposition.left);
+		tmp_colposition = $("#bg_c"+ (today_hh-1) ).position();// 1시간 전부터
+		$('#contenttable_div').scrollLeft(tmp_colposition.left);
 	}
 	// row
 	var tmp_date = new Date(); // previous day
@@ -519,18 +531,21 @@ function fnAdjTimeTable(){
 	//var tmp_date_yy = tmp_date.getFullYear();
 	var tmp_date_mm = tmp_date.getMonth()+1;
 	var tmp_date_dd = tmp_date.getDate();
-	if ($j("#content_td_"+tmp_date_mm+"-"+tmp_date_dd).length > 0 ) { 
-		tmp_rowposition = $j("#content_td_"+tmp_date_mm+"-"+tmp_date_dd).position();
-		$j('#contenttable_div').scrollTop(tmp_rowposition.top-1);	//(당일 보더로 인해 IE, FF에서 레이블 컬럼 맨윗줄 안보이는것 보이도록 -1 조정)
+	if ($("#content_td_"+tmp_date_mm+"-"+tmp_date_dd).length > 0 ) { 
+		tmp_rowposition = $("#content_td_"+tmp_date_mm+"-"+tmp_date_dd).position();
+		$('#contenttable_div').scrollTop(tmp_rowposition.top-1);	//(당일 보더로 인해 IE, FF에서 레이블 컬럼 맨윗줄 안보이는것 보이도록 -1 조정)
 	}
 
+}); 
 }
 
 /* *************************************************************************** */
 /* calendar(Time table) - 주단위 function to support scrolling of title and first column */
 function fnScroll(){
-	$j('#header_div').scrollLeft($j('#contenttable_div').scrollLeft());	//좌우 스크롤시 헤더(1-24시) 위치 조정
-	$j('#label_div').scrollTop($j('#contenttable_div').scrollTop());	//상하 스크롤시 좌측 레이블 위치 조정
+	jQuery(function($){ 
+		$('#header_div').scrollLeft($('#contenttable_div').scrollLeft());	//좌우 스크롤시 헤더(1-24시) 위치 조정
+		$('#label_div').scrollTop($('#contenttable_div').scrollTop());	//상하 스크롤시 좌측 레이블 위치 조정
+	}); 
 }
 
 /* *************************************************************************** */

@@ -35,6 +35,8 @@
 ##  - http://chungfamily.woweb.net/
 ##
 ## [changes]
+##  - 2014.01.10 : Ver 4.3.0. (함수이름에 국가코드 추가)
+##  - 2013.09.01 : Ver 4.3.0. (대체공휴일)및 함수 일부 수정
 ##  - 2011.08.01 : Ver 4.0.0. (월단위에서 시작 끝이 있는 기간 개념으로 변경)
 ##  - 2010.09.10 : 대한민국 휴일및 기념일 함수 분리함.
 ##	 * (class.planner123_main.php 파일에서 휴일과 기념일만 분리한 파일로
@@ -42,7 +44,7 @@
 ##
 //--------------------------------------------------------------------------------
 
-class planner123_holiday extends Object
+class planner123_holiday_kor extends Object
 {
 
 //--------------------------------------------------------------------------------------
@@ -58,16 +60,29 @@ Function fn_HolidayChk($dispStart_stamp, $dispEnd_stamp) {
 	  (4.5: 2006년부터 식목일은 법정 공휴일에서 법정기념일로 바뀜)
 	  (7.17: 2008년 부터 제헌절은 법정 공휴일에서 법정기념일로 바뀜)
 	*설과 추석은 앞뒤로 하루씩 휴일이 더해진다.
+	*대체휴일: 2013년 10월부터 설·추석 연휴(3일씩)가 일요일 등 공휴일과 겹치면 연휴 다음 날을 쉰다. 
+	어린이날의 경우 일요일 등 공휴일이나 토요일과 겹치면 휴일 다음 날을 쉰다.
 	*******************************************************/
 	$aHoli = null;
-		$dispStart_stamp -= 86400 * 1;	//연휴를 고려하여 1일 이전부터 계산
-		$dispEnd_stamp += 86400 * 1;	//연휴를 고려하여 1일 이후 까지 계산
-		$sYear = date("Y", $dispStart_stamp);
-		$sMonth = date("n", $dispStart_stamp);
+		$dispStart_stamp -= 86400 * 2;	//연휴를 고려하여 1일 이전부터 계산
+		$dispEnd_stamp += 86400 * 2;	//연휴를 고려하여 1일 이후 까지 계산
+		$tmp_sdt = explode("-",date("Y-n-j", $dispStart_stamp));
+		$sYear = $tmp_sdt[0];
+		$sMonth = $tmp_sdt[1];
+		$sDay = $tmp_sdt[2];
 		$sMMCount = $sYear*12 + $sMonth;
-		$eYear = date("Y", $dispEnd_stamp);
-		$eMonth = date("n", $dispEnd_stamp);
+		$tmp_edt = explode("-",date("Y-n-j", $dispEnd_stamp));
+		$eYear = $tmp_edt[0];
+		$eMonth = $tmp_edt[1];
+		$eDay = $tmp_edt[2];
 		$eMMCount = $eYear*12 + $eMonth;
+		if(function_exists('gregoriantojd')) {
+			$jd_start = gregoriantojd($sMonth, $sDay, $sYear);	// 시작 일자 jd
+			$jd_end = gregoriantojd($eMonth, $eDay, $eYear);	// 종료 일자 jd
+		} else {
+			$jd_start = planner123_main::fn_calcDateToJD($sYear, $sMonth, $sDay);
+			$jd_end = planner123_main::fn_calcDateToJD($eYear, $eMonth, $eDay);
+		}
 
 //대한민국 휴일 *********************************************************************
 	//양력 휴일(국경일,기념일중 휴일)
@@ -79,79 +94,181 @@ Function fn_HolidayChk($dispStart_stamp, $dispEnd_stamp) {
 	$aHoli[8][15] .= "광복절 ";
 	$aHoli[10][3] .= "개천절 ";
 	if($sYear >= 2013){
-		$aHoli[10][9] .= "한글날 ";	// 국경일이나 휴일아님 => 2013년 부터 법정공휴일
+		$aHoli[10][9] .= "한글날(".($sYear-1446).") " ;	// 국경일이나 휴일아님 => 2013년 부터 법정공휴일
 	}
 	$aHoli[12][25] .= "성탄절 ";
 
 	//음력휴일
-	//(설날)
-	$temp_lunDateArr = explode("-",planner123_main::fn_lun2sol($sYear,1,1));
-	$tmp_lunStmp = mktime(0, 0, 0,$temp_lunDateArr[1], $temp_lunDateArr[2], $temp_lunDateArr[0]);
+	//(석가탄신일)
 	$temp01 = null;
-	if ($tmp_lunStmp >= $dispStart_stamp && $tmp_lunStmp <= $dispEnd_stamp) {
-		$temp01 = $temp_lunDateArr;
+	$SeokGa = explode("-",planner123_main::fn_lun2sol($sYear,4,8));
+	//$jd_SeokGa = gregoriantojd($SeokGa[1], $SeokGa[2], $SeokGa[0]);  //PHP함수 없는경우 고려하여 
+	$jd_SeokGa = planner123_main::fn_calcDateToJD($SeokGa[0], $SeokGa[1], $SeokGa[2]);
+	if ($jd_SeokGa >= $jd_start && $jd_SeokGa <= $jd_end) {
+		$temp01 = $SeokGa;
 	} else {
-		$temp_lunDateArr = explode("-",planner123_main::fn_lun2sol($eYear,1,1));
-		$tmp_lunStmp = mktime(0, 0, 0,$temp_lunDateArr[1], $temp_lunDateArr[2], $temp_lunDateArr[0]);
-		if ($tmp_lunStmp >= $dispStart_stamp && $tmp_lunStmp <= $dispEnd_stamp) {
-			$temp01 = $temp_lunDateArr;
+		$SeokGa = explode("-",planner123_main::fn_lun2sol($eYear,4,8));
+		//$jd_SeokGa = gregoriantojd($SeokGa[1], $SeokGa[2], $SeokGa[0]);
+		$jd_SeokGa = planner123_main::fn_calcDateToJD($SeokGa[0], $SeokGa[1], $SeokGa[2]);
+		if ($jd_SeokGa >= $jd_start && $jd_SeokGa <= $jd_end) {
+			$temp01 = $SeokGa;
 		}
 	}
 	if (!empty($temp01)) {
-		$iLunYmd =date("Y-n-j", mktime(0, 0, 0,$temp01[1], $temp01[2], $temp01[0]));
-		$iLunYmdpre =date("Y-n-j", mktime(0, 0, 0,$temp01[1], $temp01[2]-1, $temp01[0]));
-		$iLunYmdnext =date("Y-n-j", mktime(0, 0, 0,$temp01[1], $temp01[2]+1, $temp01[0]));
-		$temp02 = explode("-",$iLunYmd);
-		$aHoli[$temp02[1]][$temp02[2]] .= "설날";
-		$temp02 = explode("-",$iLunYmdpre);
-		$aHoli[$temp02[1]][$temp02[2]] .= "설연휴";
-		$temp02 = explode("-",$iLunYmdnext);
-		$aHoli[$temp02[1]][$temp02[2]] .= "설연휴";
+		$aHoli[$temp01[1]][$temp01[2]] .= "석가탄신일";
+ 	}
+
+	//(설날)
+	$temp01 = null;
+	$SeolNal = explode("-",planner123_main::fn_lun2sol($sYear,1,1));
+	//$jd_SeolNal = gregoriantojd($SeolNal[1], $SeolNal[2], $SeolNal[0]);
+	$jd_SeolNal = planner123_main::fn_calcDateToJD($SeolNal[0], $SeolNal[1], $SeolNal[2]);
+	if ($jd_SeolNal >= $jd_start && $jd_SeolNal <= $jd_end) {
+		$temp01 = $SeolNal;
+	} else {
+		$SeolNal = explode("-",planner123_main::fn_lun2sol($eYear,1,1));
+		//$jd_SeolNal = gregoriantojd($SeolNal[1], $SeolNal[2], $SeolNal[0]);
+		$jd_SeolNal = planner123_main::fn_calcDateToJD($SeolNal[0], $SeolNal[1], $SeolNal[2]);
+		if ($jd_SeolNal >= $jd_start && $jd_SeolNal <= $jd_end) {
+			$temp01 = $SeolNal;
+		}
+	}
+	if (!empty($temp01)) {
+		$dup_Seol = 0;
+		if ($aHoli[$temp01[1]][$temp01[2]]) {
+			$dup_Seol += 1;
+		}
+		$aHoli[$temp01[1]][$temp01[2]] .= "설날";
+
+		//$SeolNal_pre = explode("/", jdtogregorian($jd_SeolNal-1));  //PHP함수 없는경우 고려하여 
+		$SeolNal_pre = explode("/", planner123_main::fn_calcJDToGregorian($jd_SeolNal-1));
+		if ($aHoli[$SeolNal_pre[0]][$SeolNal_pre[1]]) {
+			$dup_Seol += 1;
+		}
+		$aHoli[$SeolNal_pre[0]][$SeolNal_pre[1]] .= "설연휴";
+
+		//$SeolNal_nxt = explode("/", jdtogregorian($jd_SeolNal+1));
+		$SeolNal_nxt = explode("/", planner123_main::fn_calcJDToGregorian($jd_SeolNal+1));
+		if ($aHoli[$SeolNal_nxt[0]][$SeolNal_nxt[1]]) {
+			$dup_Seol += 1;
+		}
+		$aHoli[$SeolNal_nxt[0]][$SeolNal_nxt[1]] .= "설연휴";
 	}
 
 	//(추석)
-	$temp_lunDateArr = explode("-",planner123_main::fn_lun2sol($sYear,8,15));
-	$tmp_lunStmp = mktime(0, 0, 0,$temp_lunDateArr[1], $temp_lunDateArr[2], $temp_lunDateArr[0]);
 	$temp01 = null;
-	if ($tmp_lunStmp >= $dispStart_stamp && $tmp_lunStmp <= $dispEnd_stamp) {
-		$temp01 = $temp_lunDateArr;
+	$ChuSeok = explode("-",planner123_main::fn_lun2sol($sYear,8,15));
+	//$jd_ChuSeok = gregoriantojd($ChuSeok[1], $ChuSeok[2], $ChuSeok[0]);
+	$jd_ChuSeok = planner123_main::fn_calcDateToJD($ChuSeok[0], $ChuSeok[1], $ChuSeok[2]);
+	if ($jd_ChuSeok >= $jd_start && $jd_ChuSeok <= $jd_end) {
+		$temp01 = $ChuSeok;
 	} else {
-		$temp_lunDateArr = explode("-",planner123_main::fn_lun2sol($eYear,8,15));
-		$tmp_lunStmp = mktime(0, 0, 0,$temp_lunDateArr[1], $temp_lunDateArr[2], $temp_lunDateArr[0]);
-		if ($tmp_lunStmp >= $dispStart_stamp && $tmp_lunStmp <= $dispEnd_stamp) {
-			$temp01 = $temp_lunDateArr;
+		$ChuSeok = explode("-",planner123_main::fn_lun2sol($eYear,8,15));
+		//$jd_ChuSeok = gregoriantojd($ChuSeok[1], $ChuSeok[2], $ChuSeok[0]);
+		$jd_ChuSeok = planner123_main::fn_calcDateToJD($ChuSeok[0], $ChuSeok[1], $ChuSeok[2]);
+		if ($jd_ChuSeok >= $jd_start && $jd_ChuSeok <= $jd_end) {
+			$temp01 = $ChuSeok;
 		}
 	}
 	if (!empty($temp01)) {
-		$iLunYmd =date("Y-n-j", mktime(0, 0, 0,$temp01[1], $temp01[2], $temp01[0]));
-		$iLunYmdpre =date("Y-n-j", mktime(0, 0, 0,$temp01[1], $temp01[2]-1, $temp01[0]));
-		$iLunYmdnext =date("Y-n-j", mktime(0, 0, 0,$temp01[1], $temp01[2]+1, $temp01[0]));
-		$temp02 = explode("-",$iLunYmd);
-		$aHoli[$temp02[1]][$temp02[2]] .= "추석";
-		$temp02 = explode("-",$iLunYmdpre);
-		$aHoli[$temp02[1]][$temp02[2]] .= "추석연휴";
-		$temp02 = explode("-",$iLunYmdnext);
-		$aHoli[$temp02[1]][$temp02[2]] .= "추석연휴";
+		$dup_ChuSeok = 0;
+		if ($aHoli[$temp01[1]][$temp01[2]]) {
+			$dup_ChuSeok += 1;
+		}
+		$aHoli[$temp01[1]][$temp01[2]] .= "추석";
+
+		//$ChuSeok_pre = explode("/", jdtogregorian($jd_ChuSeok-1)); //PHP함수 없는경우 고려하여 
+		$ChuSeok_pre = explode("/", planner123_main::fn_calcJDToGregorian($jd_ChuSeok-1));  // mm/dd/yy
+		if ($aHoli[$ChuSeok_pre[0]][$ChuSeok_pre[1]]) {
+			$dup_ChuSeok += 1;
+		}
+		$aHoli[$ChuSeok_pre[0]][$ChuSeok_pre[1]] .= "추석연휴";
+
+		//$ChuSeok_nxt = explode("/", jdtogregorian($jd_ChuSeok+1));
+		$ChuSeok_nxt = explode("/", planner123_main::fn_calcJDToGregorian($jd_ChuSeok+1));
+		if ($aHoli[$ChuSeok_nxt[0]][$ChuSeok_nxt[1]]) {
+			$dup_ChuSeok += 1;
+		}
+		$aHoli[$ChuSeok_nxt[0]][$ChuSeok_nxt[1]] .= "추석연휴";
 	}
 
-	//(석가탄신일)
-	$temp_lunDateArr = explode("-",planner123_main::fn_lun2sol($sYear,4,8));
-	$tmp_lunStmp = mktime(0, 0, 0,$temp_lunDateArr[1], $temp_lunDateArr[2], $temp_lunDateArr[0]);
-	$temp01 = null;
-	if ($tmp_lunStmp >= $dispStart_stamp && $tmp_lunStmp <= $dispEnd_stamp) {
-		$temp01 = $temp_lunDateArr;
-	} else {
-		$temp_lunDateArr = explode("-",planner123_main::fn_lun2sol($eYear,4,8));
-		$tmp_lunStmp = mktime(0, 0, 0,$temp_lunDateArr[1], $temp_lunDateArr[2], $temp_lunDateArr[0]);
-		if ($tmp_lunStmp >= $dispStart_stamp && $tmp_lunStmp <= $dispEnd_stamp) {
-			$temp01 = $temp_lunDateArr;
+	// 대체휴일:(2013년 10월부터 시행)
+	// 설날 연휴와 추석 연휴가 다른 공휴일과 겹치는 경우 그 날 다음의 첫 번째 비공휴일을 공휴일로 하고, 
+	// 어린이날이 토요일 또는 다른 공휴일과 겹치는 경우 그 날 다음의 첫 번째 비공휴일을 공휴일로 함 
+	if($sMMCount >= 2013*12 + 10){
+		if($SeolNal_nxt){
+			//$wrk1 = jddayofweek( $jd_SeolNal+1, 0 ); //요일 0=일, 1=월
+			$wrk1 = (1+$jd_SeolNal+1)%7; //요일 0=일, 1=월  (함수가 없는 경우를 위해서 대체함)
+			if($wrk1 < 3){
+				$dup_Seol += 1;
+			}
+			if($dup_Seol > 0){
+				for ($d=1; $d < 5; $d++ ) {
+					//$wrk_yoil = jddayofweek($jd_SeolNal+1+$d, 0 ); //요일 0=일, 1=월 
+					$wrk_yoil = (1+$jd_SeolNal+1+$d)%7; //요일 0=일, 1=월  (함수가 없는 경우를 위해서 게산으로 대체)
+					//$jdDate = jdtogregorian($jd_SeolNal+1+$d);
+					$jdDate = planner123_main::fn_calcJDToGregorian($jd_SeolNal+1+$d);
+					$temp01 = explode("/",$jdDate);
+					if($aHoli[$temp01[0]][$temp01[1]] == "" && $wrk_yoil != 0 ){
+						$aHoli[$temp01[0]][$temp01[1]] .= "대체공휴일"; // 설연휴 대체공휴일
+						//$dup_Seol -= 1;
+						//if($dup_Seol <= 0) {
+							break;
+						//}
+					}
+				}
+			}
 		}
-	}
-	if (!empty($temp01)) {
-		$iLunYmd =date("Y-n-j", mktime(0, 0, 0,$temp01[1], $temp01[2], $temp01[0]));
-		$temp02 = explode("-",$iLunYmd);
-		$aHoli[$temp02[1]][$temp02[2]] .= "석가탄신일";
- 	}
+		if($ChuSeok_nxt){
+			//$wrk1 = jddayofweek( $jd_ChuSeok+1, 0 ); //요일 0=일, 1=월
+			$wrk1 = (1+$jd_ChuSeok+1)%7; //요일 0=일, 1=월
+			if($wrk1 < 3){
+				$dup_ChuSeok += 1;
+			}
+			if($dup_ChuSeok > 0){
+				for ($d=1; $d < 5; $d++ ) {
+					//$wrk_yoil = jddayofweek($jd_ChuSeok+1+$d, 0 ); //요일 0=일, 1=월
+					$wrk_yoil = (1+$jd_ChuSeok+1+$d)%7; //요일 0=일, 1=월
+					//$jdDate = jdtogregorian($jd_ChuSeok+1+$d);
+					$jdDate = planner123_main::fn_calcJDToGregorian($jd_ChuSeok+1+$d);
+					$temp01 = explode("/",$jdDate);
+					if($aHoli[$temp01[0]][$temp01[1]] == "" && $wrk_yoil != 0 ){
+						$aHoli[$temp01[0]][$temp01[1]] .= "대체공휴일"; // 추석연휴 대체공휴일
+						//$dup_ChuSeok -= 1;
+						//if($dup_ChuSeok <= 0) {
+							break;
+						//}
+					}
+				}
+			}
+		}
+		if($aHoli[5][5] != "어린이날 "){
+			$dup_Child += 1;
+		}
+		//$jd_Child = gregoriantojd(5, 5, $sYear);
+		$jd_Child = planner123_main::fn_calcDateToJD($sYear, 5, 5);
+		//$wrk_yoil = jddayofweek($jd_Child, 0 ); //요일 0=일, 1=월
+		$wrk_yoil = (1+$jd_Child)%7; //요일 0=일, 1=월
+		if($wrk_yoil == 0 || $wrk_yoil == 6){
+			$dup_Child += 1;
+		}
+		if($dup_Child > 0){
+				for ($d=1; $d < 5; $d++ ) {
+					//$wrk_yoil = jddayofweek($jd_Child+$d, 0 ); //요일 0=일, 1=월
+					$wrk_yoil = (1+$jd_Child+$d)%7; //요일 0=일, 1=월
+					//$jdDate = jdtogregorian($jd_Child+$d);
+					$jdDate = planner123_main::fn_calcJDToGregorian($jd_Child+$d);
+					$temp01 = explode("/",$jdDate);
+					if($aHoli[$temp01[0]][$temp01[1]] == "" && $wrk_yoil != 0 ){
+						$aHoli[$temp01[0]][$temp01[1]] .= "대체공휴일"; // 어린이날 대체공휴일
+						//$dup_Child -= 1;
+						//if($dup_Child <= 0) {
+							break;
+						//}
+					}
+				}
+		}
+	} //End 대체휴일 
 
 	return $aHoli;
 }
@@ -168,14 +285,25 @@ Function fn_MemdayChk($dispStart_stamp, $dispEnd_stamp) {
     *음력 기념일 등
     *******************************************************/
     $aHoli = null;
-		$dispStart_stamp -= 86400 * 1;	//연휴를 고려하여 1일 이전부터 계산
-		$dispEnd_stamp += 86400 * 1;	//연휴를 고려하여 1일 이후 까지 계산
-		$sYear = date("Y", $dispStart_stamp);
-		$sMonth = date("n", $dispStart_stamp);
+		$dispStart_stamp -= 86400 * 2;	//연휴를 고려하여 1일 이전부터 계산
+		$dispEnd_stamp += 86400 * 2;	//연휴를 고려하여 1일 이후 까지 계산
+		$tmp_sdt = explode("-",date("Y-n-j", $dispStart_stamp));
+		$sYear = $tmp_sdt[0];
+		$sMonth = $tmp_sdt[1];
+		$sDay = $tmp_sdt[2];
 		$sMMCount = $sYear*12 + $sMonth;
-		$eYear = date("Y", $dispEnd_stamp);
-		$eMonth = date("n", $dispEnd_stamp);
+		$tmp_edt = explode("-",date("Y-n-j", $dispEnd_stamp));
+		$eYear = $tmp_edt[0];
+		$eMonth = $tmp_edt[1];
+		$eDay = $tmp_edt[2];
 		$eMMCount = $eYear*12 + $eMonth;
+		if(function_exists('gregoriantojd')) {
+			$jd_start = gregoriantojd($sMonth, $sDay, $sYear);	// 시작 일자 jd
+			$jd_end = gregoriantojd($eMonth, $eDay, $eYear);	// 종료 일자 jd
+		} else {
+			$jd_start = planner123_main::fn_calcDateToJD($sYear, $sMonth, $sDay);
+			$jd_end = planner123_main::fn_calcDateToJD($eYear, $eMonth, $eDay);
+		}
 
 //음력 기념일  $aMoon[월][일][평달=0, 윤달=1, 윤달및평달=2] 형식으로....
 //음력은 일년에 같은 월 같은 날이 두번 들어 있을 수 있음.
@@ -403,11 +531,9 @@ if ($aMoon) {
 		} else {
 			$temp01 = explode("-",planner123_main::fn_easterday_2($wrkYY));
 		}
-		$iYmd =date("Y-n-j", mktime(0, 0, 0,$temp01[1], $temp01[2], $temp01[0]));
-	    $temp02 = explode("-",$iYmd);
-		$tmp_stamp = mktime(0,0,0,$temp02[1],$temp02[2],$temp02[0]);
+		$tmp_stamp = mktime(0, 0, 0,$temp01[1], $temp01[2], $temp01[0]);
 		if($tmp_stamp >= $dispStart_stamp && $tmp_stamp <= $dispEnd_stamp){
-		    $aHoli[$temp02[1]][$temp02[2]] .= " 부활절";
+		    $aHoli[$temp01[1]][$temp01[2]] .= " 부활절";
 		}
 	}
 

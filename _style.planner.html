@@ -34,7 +34,8 @@
 ##  - Keysung Chung, 2009, 07, 28
 ##  - http://chungfamily.woweb.net/
 ## [changes]
-##  - PlannerXE123 ver. 4.1.0 : Keysung Chung, 2012, 04, 27
+##  - PlannerXE123 ver. 4.3.0 : Keysung Chung, 2014, 01, 01
+##  - PlannerXE123 ver. 4.1.0 : Keysung Chung, 2013, 03, 12
 ##  - PlannerXE123 ver. 4.0.0 : Keysung Chung, 2011, 08, 01
 ##  - PlannerXE123 ver. 3.3.0 : Keysung Chung, 2010, 12, 12
 ##  - PlannerXE123 ver. 3.2.0 : Keysung Chung, 2010, 10, 31
@@ -54,7 +55,7 @@
 ##	- PlannerXE123 ver. 0.1 : Keysung Chung, 2009, 07, 28
 ----------------------------------------------------------------------- -->
 <!--// **************************************************************** -->
-
+<!--#include("./_get_schedule.html")-->
 <!--// **************************************************************** -->
 <!--@if($module_info->colorset == "black")-->
 <!--%import("css/planner123_calendar_black.css")-->
@@ -117,32 +118,30 @@
 <!--@endif-->
 </div>
 </div>
-<!--@if($module_info->use_category == "Y" && count($category_list) && $module_info->display_category_button != "N")--><!--// 카테고리 탭 출력 -->
+<!--@if($ind_use_category == "Y" && count($category_list) && $module_info->display_category_button != "N")--><!--// 카테고리 탭 출력 -->
 <!--@foreach($category_list as $val)-->
 {@ $tmp_cartegory[$val->title] = array('title' => $val->title, 'category_srl' => $val->category_srl, 'color' => $val->color, 'grant' => $val->grant, 'selected' => $val->selected, 'document_count' => $val->document_count, 'depth' => $val->depth)}
 <!--@end-->
 {@ ksort($tmp_cartegory)}
-<div style="clear:both;display:none;">
-<!--@if($lang_type == "ko")-->{@ $label_cat_all="분류전체"}<!--@else-->{@ $label_cat_all="ALL"}<!--@end-->
+<div class="category_navigation"">
+{@ $label_cat_all=$lang->pln_cat_all}
 <button title="{$label_cat_all}" type="button" id="btn_all" onclick="doChgCategory(); return false;" class="button2" style='font-size:12px; padding:1px; cursor:pointer; color:#000000;'><!--@if(!$category)--><span class="strong"><!--@else--><span><!--@end-->{$label_cat_all}</span></button>
 <!--@foreach($tmp_cartegory as $val)-->
 <button title="{$val['title']}" type="button" id={$val['title']} onclick="doChgCategory({$val['category_srl']}); return false;" class="button2" style="font-size:12px; padding:1px; cursor:pointer; <!--@if($val['color'] != transparent)-->color:{$val['color']};<!--@end-->" > <!--@if($category == $val['category_srl'])--><span class="strong" ><!--@else--><span><!--@end-->{$val['title']}</span></button>
 <!--@end-->
 </div>
 <!--@end-->
-<!--S:라이프팟-->
-<include target="colorset/eond_category.html" /><!--E:라이프팟-->
 {@
 $tbl_html .=  "<table class='planner_calendar' summary='PlannerXE123'>";//  달력
 $tbl_html .=  "<thead>";
 $tbl_html .=  "<tr>";
-$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border holiday'><div class='wd_title'>".$lang->sun."</div></div></th>";
-$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>".$lang->mon."</div></div></th>";
-$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>".$lang->tue."</div></div></th>";
-$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>".$lang->wed."</div></div></th>";
-$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>".$lang->thu."</div></div></th>";
-$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>".$lang->fri."</div></div></th>";
-$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border saturday'><div class='wd_title'>".$lang->sat."</div></div></th>";
+$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border holiday'><div class='wd_title'>Sun</div></div></th>";
+$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>Mon</div></div></th>";
+$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>Tue</div></div></th>";
+$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>Wed</div></div></th>";
+$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>Thu</div></div></th>";
+$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border'><div class='wd_title'>Fri</div></div></th>";
+$tbl_html .=  "<th scope='col' width='14%'><div class='wd_border saturday'><div class='wd_title'>Sat</div></div></th>";
 $tbl_html .=  "</tr>";
 $tbl_html .=  "</thead>";
 $tbl_html .=  "<tbody>";
@@ -152,7 +151,6 @@ $memday_html = null;
 $count_seg = 0;
 $weekcount = count($Calmain);
 }
-
 <!--@for($i=0; $i<$weekcount; $i++)-->
 {@ $tbl_html .= "<tr id='planner_week".$i."'>";}
 <!--@for($j=0; $j<7; $j++)-->
@@ -211,9 +209,9 @@ $tmparr6=explode("|#&Oslash;#|",$arr_plan[$Calmain_MM][$Calmain_DD]);// 일정/�
 {@ $outtext = "<div style='margin:0; height:18px;'>";}<!--// 평일-->
 <!--@end-->
 <!--@if(($j==0 || $Calmain_DD==1) && ($pOption == 'W1' || $pOption == 'W2' || $ind_weekly_base > 0))-->
-{@ $tmp_dsp_mmdd = $Calmain_MM."/".$Calmain_DD}
+{@ $tmp_dsp_mmdd = $Calmain_MM."/".$Calmain_DD;}
 <!--@else-->
-{@ $tmp_dsp_mmdd = $Calmain_DD}
+{@ $tmp_dsp_mmdd = $Calmain_DD;}
 <!--@end-->
 <!--@if($j==0 || $tmparr4[0] != null)-->
 {@ $tmpfld = "<span class='date_label holiday'>".$tmp_dsp_mmdd."</span>";}<!--// 일요일 및 휴일-->
@@ -222,14 +220,21 @@ $tmparr6=explode("|#&Oslash;#|",$arr_plan[$Calmain_MM][$Calmain_DD]);// 일정/�
 <!--@else-->
 {@ $tmpfld = "<span class='date_label weekday'>".$tmp_dsp_mmdd."</span>";}<!--// 평일-->
 <!--@end-->
-<!--@if($ind_duplicated != 'Y' && mktime(0,0,0,$Calmain_MM,$Calmain_DD,$Calmain_YY) < mktime(0,0,0,$todayMM,$todayDD,$todayYY) )--><!--// 중복일정 금지시 과거일자는 링크없이.-->
+{@ $is_offday = FALSE;}
+<!--@if($ind_offday_naNew || $ind_offday_Label)--><!--// 휴무일 신규금지및 휴무일표시V430-->
+{@ $is_offday = in_array(strval($j), $dft_offday);}
+<!--@if(!$is_offday && $ind_holiday_off)-->
+{@ if($dft_holiday[$Calmain_MM][$Calmain_DD] != "") $is_offday = TRUE; //default holiday}
+<!--@end-->
+<!--@end-->
+<!--@if($is_offday && $ind_offday_naNew || $ind_reservation != 'N' && mktime(0,0,0,$Calmain_MM,$Calmain_DD,$Calmain_YY) < mktime(0,0,0,$todayMM,$todayDD,$todayYY) )--><!--// 휴무일 및 예약일정시 과거일자는 링크없이.-->
 {@ $templink = "<a href='#' class='strong font_big past_day'>".$tmpfld."</a>";}
 <!--@else-->
 {@
 $write_ymd = $Calmain_YY.substr('0'.$Calmain_MM,-2).substr('0'.$Calmain_DD,-2);// '-' 제거 일정시작 확장변수 값
 $templink = getUrl('act','dispBoardWrite','document_srl','','extra_vars1',$write_ymd);// 일자 클릭시 쓰기로
 }
-<!--@if($Calmain_MM != $pMonth && $btn_month == 'Y' && $pOption == 'M' && $ind_weekly_base <= 6)--><!--//월이다르면 반투명(TD에는잘안됨)-->
+<!--@if($Calmain_MM != $pMonth && $ind_fill == 'Y' && $pOption == 'M' && $ind_weekly_base <= 6)--><!--//월이다르면 반투명(TD에는잘안됨)-->
 {@ $templink = "<a href=".$templink." class='strong font_big diff_month'>".$tmpfld."</a>";}
 <!--@else-->
 {@ $templink = "<a href=".$templink." class='strong font_big'>".$tmpfld."</a>";}
@@ -293,7 +298,7 @@ $tmp_time = null;
 }
 <!--@else-->
 {@ $tmp_time = explode(",",$tmparr7[8]);}
-<!--@if($ind_duplicated == "N")--><!--// 중복금지-->
+<!--@if($ind_reservation == "T")--><!--// 예약(시간)-->
 {@
 $title_time = $tmp_time[0];
 $time_start = $tmp_time[0];
@@ -329,11 +334,13 @@ $time_end = date('H:i', mktime($tmp_etime_arr[0],$tmp_etime_arr[1],-1,1,1,2011))
 {@ $tooltip_desc = $time_disply_fld.$tmparr7[2];}
 <!--@end--><!--//툴팁표시조건-->
 {@ $title_disp = $tmparr7[0];}<!--// 출력될 일정 제목-->
-
 <!--@if($tmparr7[11] > 1)--><!--// 일정기간 1일이상일경우 -->
 {@ $id_overflow = "overflow:hidden; height:14px;";}
 <!--@else-->
 {@ $id_overflow = "";}
+<!--@end-->
+<!--@if($tmparr7[3] =="" && $tmparr7[6] =="")-->
+{@ $tmparr7[3] = $tmparr7[6] = "#77CC00";}
 <!--@end-->
 <!--@if($ind_bgcolor_option == "picker_bg")--><!--// 선택색상을->배경색-->
 {@
@@ -373,12 +380,16 @@ $tmp_style1_1 = "style='padding:2px 0 0 2px; background-color:".$tmparr7[3]."; b
 $tmp_style2 = "style='vertical-align:top; background-color:".$tmparr7[3].";'";
 }
 <!--@end-->
-<!--@if($ind_image_diary == "Y" && !empty($tmparr7[10]) && $tmparr7[11] == 1 && !$ind_mobile)--><!--// 액자없음-하루일정-모바일아닐때-->
+<!--@if(!empty($tmparr7[10]) && $tmparr7[11] == 1 && !$ind_mobile)--><!--// 그림있고 하루일정이며 모바일아닐때-->
+<!--@if($ind_image_diary == "Y")--><!--// 액자없음-->
 {@ $temp_html = "<a ".$tmp_style2." href=".$tmparr7[1].">"."<span class='schedule_view schedule_bottom' ".$tmp_style1_0." title='".$tooltip_desc."'>"."<img style='vertical-align:top;' src='".$tmparr7[10]."'/>"."<span style='clear:both;'>".$title_disp.$tmparr7[9]."</span>"."</span>"."</a>";}
-<!--@elseif($ind_image_diary == "F" && !empty($tmparr7[10]) && $tmparr7[11] == 1 && !$ind_mobile)--><!--// 액자있음-하루일정-모바일아닐때-->
+<!--@elseif($ind_image_diary == "F")--><!--// 액자있음--->
 {@ $temp_html = "<a ".$tmp_style2." href=".$tmparr7[1].">"."<span class='schedule_view schedule_bottom' ".$tmp_style1_1." title='".$tooltip_desc."'>"."<img style='vertical-align:top;' src='".$tmparr7[10]."'/>"."<span style='clear:both;'>".$title_disp.$tmparr7[9]."</span>"."</span>"."</a>";}
+<!--@else--><!--// 적용안음--->
+{@ $temp_html = "<a ".$tmp_style2." href=".$tmparr7[1]."> "."<span class='schedule_view schedule_bottom' ".$tmp_style." title='".$tooltip_desc."'>".$lplan_state.$title_time." ".$title_disp.$tmparr7[9]."</span>"."</a>";}
+<!--@end-->
 <!--@else-->
-<!--@if($ind_repeat_style != "N" || $tmparr7[11] == 1 || $ind_mobile)--><!--// 모바일, 제목한번표시 또는 하루일정-->
+<!--@if($ind_repeat_style != "N" || $tmparr7[11] == 1)--><!--// 제목한번표시 또는 하루일정-->
 {@ $temp_html = "<a ".$tmp_style2." href=".$tmparr7[1]."> "."<span class='schedule_view schedule_bottom' ".$tmp_style." title='".$tooltip_desc."'>".$lplan_state.$title_time." ".$title_disp.$tmparr7[9]."</span>"."</a>";}
 <!--@else--><!--// 제목여러번 표시면서 연속일정-->
 {@ $temp_html = "<a ".$tmp_style2." href=".$tmparr7[1].">"."<span class='schedule_view schedule_bottom' ".$tmp_style." title='".$tooltip_desc."'>"."<span class='inside'>".$lplan_state.$title_time.$title_disp."</span>";}<!--//첫날 -->
@@ -429,7 +440,7 @@ $count_seg += 1;
 <!--@if( $pOption != 'W1' && $pOption != 'W2' )--><!--// 주별로 보는경우가 아닐때는 직접 처리가 좋을듯(시간단축)-->
 {@ $tbl_html .= $temp_html;}<!--// 바로 처리-->
 <!--@else-->
-<!--@if($holiday_process =="js")--><!--// "js" 및 매일 분리처리가 아닐때는 jquery에서 처리-->
+<!--@if($holiday_process =="js")-->
 {@
 $schedule_html[$count_seg]['week'] = $i;
 $schedule_html[$count_seg]['weekday'] = $j;
@@ -482,6 +493,10 @@ $count_seg += 1;
 <!--@end-->
 <!--@end-->
 <!--@end-->
+<!--@if($is_offday && $ind_offday_Label)--><!--// 휴무일-->
+{@ $temp_html = "<div class='offday strong'>".$lang->pln_off_day."</div>";}<!--//휴뮤일표시-->
+{@ $tbl_html .= $temp_html;}<!--// 바로 처리-->
+<!--@end-->
 {@ $tbl_html .= "</div>";}<!--//end day_schedule_container-->
 <!--@end--><!--// end 날자 있을때-->
 {@ $tbl_html .= "</div>";}<!--//end planner_calendar_inner-->
@@ -514,7 +529,7 @@ and your time is <font color='blue'>{date("l, F j, Y, g:i a", $client_timestamp)
 </div>
 <!--@end-->
 <!--@if($schedule_html)--><!--// jquery에서 사용할 스케쥴 어레이 정렬: 출력순서 조정위해 타입->날자->긴일정->시간 순서로 정렬 -->
-{@ $schedule_html = planner123_main::fn_array_orderby($schedule_html, 'segtype', SORT_ASC, 'date', SORT_ASC, 'revseq', SORT_ASC, 'pln_time', SORT_ASC, 'pln_srl', SORT_DESC);}
+{@ $schedule_html = planner123_main::fn_array_orderby($schedule_html, 'segtype', SORT_ASC, 'date', SORT_ASC, 'revseq', SORT_ASC, 'pln_stime', SORT_ASC, 'pln_srl', SORT_DESC);}
 <!--@end-->
 <!--@if(!function_exists('json_encode'))--><!--// json_encode: PHP 5.2.0 부터지원 -->
 <!--@if(!class_exists("Services_JSON"))-->
@@ -530,7 +545,6 @@ $schedule_html_json = $json->encode($schedule_html);
 <script type="text/javascript">
 //<![CDATA[
 /* 일정 출력 */
-var $j = jQuery.noConflict();
 var arrayFromPHP = {$schedule_html_json}; // PHP에서 만든 일정 어레이를 받아서
 var repeat_style = "{$ind_repeat_style}";
 var ind_pOption = "{$pOption}";
@@ -540,7 +554,8 @@ var dispEnd_stamp = "{$dispEnd_stamp}";
 var dispStart_date = "{$dispStart_date}";
 var dispEnd_date = "{$dispEnd_date}";
 var ind_Timetable = "{$pTimeSchedule}"; // display time-table
-$j(document).ready(function() {
+jQuery(function($){
+$(document).ready(function() {
 doDisplaySchedule(arrayFromPHP,repeat_style,ind_mobile);   // make schedule on the calendar table
 if ((ind_pOption == 'W1' || ind_pOption == 'W2') && ind_Timetable == 'Y' ) {
 fnMakeTableGrid(dispStart_date,dispEnd_date,ind_mobile); // grid time table
@@ -549,8 +564,9 @@ fnAdjTimeTable(); // adjust time table header
 }
 });
 /* windows resize일때 일정폭 재계산 (별의미없음)*/
-$j(window).resize(function() {
+$(window).resize(function() {
 doResizeScheduleWidth(arrayFromPHP);
+});
 });
 //]]>
 </script>

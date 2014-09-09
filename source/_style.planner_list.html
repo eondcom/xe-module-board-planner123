@@ -34,7 +34,8 @@
 ##  - Keysung Chung, 2009, 07, 28
 ##  - http://chungfamily.woweb.net/
 ## [changes]
-##  - PlannerXE123 ver. 4.1.0 : Keysung Chung, 2012, 04, 27
+##  - PlannerXE123 ver. 4.3.0 : Keysung Chung, 2014, 01, 01
+##  - PlannerXE123 ver. 4.1.0 : Keysung Chung, 2013, 03, 12
 ##  - PlannerXE123 ver. 4.0.0 : Keysung Chung, 2011, 08, 01
 ##  - PlannerXE123 ver. 3.3.0 : Keysung Chung, 2010, 12, 12
 ##  - PlannerXE123 ver. 3.2.0 : Keysung Chung, 2010, 10, 31
@@ -51,7 +52,7 @@
 ##  - PlannerXE123 ver. 1.0.0 : Keysung Chung, 2010, 04, 01
 ##  - PlannerXE123 ver. 0.3 : Keysung Chung, 2010, 02, 28
 ##  - PlannerXE123 ver. 0.2 : Keysung Chung, 2009, 11, 09
-##  - PlannerXE123 ver. 0.1 : Keysung Chung, 2009, 07, 28
+##	- PlannerXE123 ver. 0.1 : Keysung Chung, 2009, 07, 28
 ----------------------------------------------------------------------- -->
 <!--// **************************************************************** -->
 <!--#include("./_get_schedule.html")-->
@@ -91,7 +92,7 @@
 			</div>
 		<!--@end-->
 
-		<div class="planner_navigation">
+        <div class="planner_navigation">
 			<form style="float:left; width:65px;" name = "fm_select_year">
 			<select style ="height:17px; margin:0; padding:0; font-size:11px;" name="selectyear" onchange="document.location.href='{$linkpath}&amp;pYear=' + this.options[this.selectedIndex].value +'&amp;pMonth={$pMonth}'">
 			<option value='{$pYear}'>{$pYear}</option>
@@ -120,13 +121,13 @@
         </div>
     </div>
 
-	<!--@if($module_info->use_category == "Y" && count($category_list) && $module_info->display_category_button != "N")--><!--// 카테고리 탭 출력 -->
+	<!--@if($ind_use_category == "Y" && count($category_list) && $module_info->display_category_button != "N")--><!--// 카테고리 탭 출력 -->
 		<!--@foreach($category_list as $val)-->
 			{@ $tmp_cartegory[$val->title] = array('title' => $val->title, 'category_srl' => $val->category_srl, 'color' => $val->color, 'grant' => $val->grant, 'selected' => $val->selected, 'document_count' => $val->document_count, 'depth' => $val->depth)}
 		<!--@end-->
 		{@ ksort($tmp_cartegory)}
-		<div style="clear:both;">
-		<!--@if($lang_type == "ko")-->{@ $label_cat_all="분류전체"}<!--@else-->{@ $label_cat_all="ALL"}<!--@end-->
+		<div class="category_navigation"">
+			{@ $label_cat_all=$lang->pln_cat_all}
 			<button title="{$label_cat_all}" type="button" id="btn_all" onclick="doChgCategory(); return false;" class="button2" style='font-size:12px; padding:1px; cursor:pointer; color:#000000;'><!--@if(!$category)--><span class="strong"><!--@else--><span><!--@end-->{$label_cat_all}</span></button>
 			<!--@foreach($tmp_cartegory as $val)-->
 				<button title="{$val['title']}" type="button" id={$val['title']} onclick="doChgCategory({$val['category_srl']}); return false;" class="button2" style="font-size:12px; padding:1px; cursor:pointer; <!--@if($val['color'] != transparent)-->color:{$val['color']};<!--@end-->" > <!--@if($category == $val['category_srl'])--><span class="strong" ><!--@else--><span><!--@end-->{$val['title']}</span></button>
@@ -198,12 +199,20 @@
                     {@ $tmpfld = "<span class='weekday strong font_big'>".$label_mm.$Calmain_DD."</span>";}<!--// 평일-->
                 <!--@end-->
 
-				<!--@if($ind_duplicated != 'Y' && mktime(0,0,0,$Calmain_MM,$Calmain_DD,$Calmain_YY) < mktime(0,0,0,$todayMM,$todayDD,$todayYY) )--><!--// 중복일정금지시 과거일자는 링크없이.-->
+					{@ $is_offday = FALSE;}
+					<!--@if($ind_offday_naNew || $ind_offday_Label)--><!--// 휴무일 신규금지및 휴무일표시V430-->
+						{@ $is_offday = in_array(strval($j), $dft_offday);}
+						<!--@if(!$is_offday && $ind_holiday_off)-->
+							{@ if($dft_holiday[$Calmain_MM][$Calmain_DD] != "") $is_offday = TRUE; //default holiday}
+						<!--@end-->
+					<!--@end-->
+
+				<!--@if($is_offday && $ind_offday_naNew || $ind_reservation != 'N' && mktime(0,0,0,$Calmain_MM,$Calmain_DD,$Calmain_YY) < mktime(0,0,0,$todayMM,$todayDD,$todayYY) )--><!--// 휴무일 및 예약일정시 과거일자는 링크없이.-->
 		            {@ $templink = "<a href='#' class='past_day'>".$tmpfld."</a>";}
 		 		<!--@else-->
 					{@ $write_ymd = $Calmain_YY.substr('0'.$Calmain_MM,-2).substr('0'.$Calmain_DD,-2);}<!--// '-' 제거 --><!--// 일정시작 확장변수 값-->
 					{@ $templink = getUrl('act','dispBoardWrite','document_srl','','extra_vars1',$write_ymd);}<!--// 일자 클릭시 쓰기로 이동-->
-					<!--@if($Calmain_MM != $pMonth && $btn_month == 'Y' && $pOption == 'M' && $ind_weekly_base <= 6)--><!--//월이다르면 일자 반투명-->
+					<!--@if($Calmain_MM != $pMonth && $ind_fill == 'Y' && $pOption == 'M' && $ind_weekly_base <= 6)--><!--//월이다르면 일자 반투명-->
 						{@ $templink = "<a href=".$templink." class='diff_month'>".$tmpfld."</a>";}
 					<!--@else-->
 						{@ $templink = "<a href=".$templink.">".$tmpfld."</a>";}
@@ -289,7 +298,7 @@
 									}
 								<!--@else-->
 									{@ $tmp_time = explode(",",$tmparr7[8]);}
-									<!--@if($ind_duplicated == "N")--><!--// 중복금지-->
+									<!--@if($ind_reservation == "T")--><!--// 예약(시간)-->
 										{@
 										$title_time = $tmp_time[0];
 										$time_start = $tmp_time[0];
@@ -328,6 +337,9 @@
 
 								{@ $title_disp = $tmparr7[0];}<!--// 출력될 일정 제목-->
 									
+							<!--@if($tmparr7[3] =="" && $tmparr7[6] =="")-->
+								{@ $tmparr7[3] = $tmparr7[6] = "#77CC00";}
+							<!--@end-->
 							<!--@if($ind_bgcolor_option == "picker_bg")--><!--// 선택색상을->배경색-->
 								{@
 								$tmp_style = "style='clear:both; background-color:".$tmparr7[3]."; '";
@@ -376,6 +388,8 @@
 							<!--@end-->
 							<!--@if($module_info->display_detail == "Y")--><!--// 두째칸(일정/플랜)detail 출력을 위해...-->
 								{@ $out_html .= $out_text."<div style='padding-left:10px;'>".$tmparr7[2]."</div>";}
+							<!--@elseif($module_info->display_detail == "F")-->
+								{@ $out_html .= $out_text."<div style='padding-left:10px;'>".$plan_detail_all[$tmparr7[12]]."</div>";}
 							<!--@else-->
 								{@ $out_html .= $out_text;}<!--// 두째칸(일정/플랜)출력-->
 							<!--@end-->
@@ -407,6 +421,10 @@
 						<!--@end--><!--// end if 일정 있으면 끝-->
                     <!--@end--><!--// end foreach($tmparr6 as $val)-->
                 <!--@end--><!--// end if(!empty($tmparr6[0])-->
+
+				<!--@if($is_offday && $ind_offday_Label)--><!--// 휴무일-->
+					{@ $out_html .= "<div class='offday strong'>".$lang->pln_off_day."</div>";}<!--//휴뮤일표시-->
+				<!--@end-->
 
 				{@ $ind_ua = planner123_main::fn_get_USER_AGENT()}
 				<!--@if(($ind_ua == "IE6" || $ind_ua == "IE7") && $Calmain_yymmdd == $today_yymmdd)-->
@@ -478,7 +496,7 @@
 <!--@end-->
 
 <!--@if($schedule_html)--><!--// jquery에서 사용할 스케쥴 어레이 정렬: 출력순서 조정위해 타입->날자->긴일정->시간 순서로 정렬 -->
-{@ $schedule_html = planner123_main::fn_array_orderby($schedule_html, 'segtype', SORT_ASC, 'date', SORT_ASC, 'revseq', SORT_ASC, 'pln_time', SORT_ASC, 'pln_srl', SORT_DESC);}
+{@ $schedule_html = planner123_main::fn_array_orderby($schedule_html, 'segtype', SORT_ASC, 'date', SORT_ASC, 'revseq', SORT_ASC, 'pln_stime', SORT_ASC, 'pln_srl', SORT_DESC);}
 <!--@end-->
 
 <!--@if(!function_exists('json_encode'))--><!--// json_encode: PHP 5.2.0 부터지원 -->
@@ -496,8 +514,8 @@
 <script type="text/javascript">
 //<![CDATA[
 /* 일정 출력 */
-var $j = jQuery.noConflict();
 var arrayFromPHP = {$schedule_html_json}; // PHP에서 만든 일정 어레이를 받아서
+var repeat_style = "{$ind_repeat_style}";
 var ind_pOption = "{$pOption}";
 var ind_mobile = "{$ind_mobile}";
 var dispStart_stamp = "{$dispStart_stamp}";
@@ -505,17 +523,20 @@ var dispEnd_stamp = "{$dispEnd_stamp}";
 var dispStart_date = "{$dispStart_date}";
 var dispEnd_date = "{$dispEnd_date}";
 var ind_Timetable = "{$pTimeSchedule}"; // display time-table
-$j(document).ready(function() {
-	if ((ind_pOption == 'W1' || ind_pOption == 'W2') && ind_Timetable == 'Y' ) {
-    fnMakeTableGrid(dispStart_date,dispEnd_date,ind_mobile); // grid time table
-    fnMakeWeeklySchedule(arrayFromPHP,dispStart_stamp,dispEnd_stamp); // make schedule in the time table
-    fnAdjTimeTable(); // adjust time table header
-	}
-});
+jQuery(function($){ 
+	$(document).ready(function() {
+		doDisplaySchedule(arrayFromPHP,repeat_style,ind_mobile);   // make schedule on the calendar table
+		if ((ind_pOption == 'W1' || ind_pOption == 'W2') && ind_Timetable == 'Y' ) {
+			fnMakeTableGrid(dispStart_date,dispEnd_date,ind_mobile); // grid time table
+			fnMakeWeeklySchedule(arrayFromPHP,dispStart_stamp,dispEnd_stamp); // make schedule in the time table
+			fnAdjTimeTable(); // adjust time table header
+		}
+	});
 
-/* windows resize일때 일정폭 재계산 (별의미없음)*/
-$j(window).resize(function() {
-doResizeScheduleWidth(arrayFromPHP);
+	/* windows resize일때 일정폭 재계산 (별의미없음)*/
+	$(window).resize(function() {
+		doResizeScheduleWidth(arrayFromPHP);
+	});
 });
 //]]>
 </script>
